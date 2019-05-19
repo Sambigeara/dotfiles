@@ -68,7 +68,8 @@ set t_Co=256 " 256 colors
 set background=dark
 " Toggle between light and dark background
 map <Leader>bg :let &background = ( &background == "dark"? "light" : "dark" )<CR>
-color PaperColor
+colo grb24bit
+"color PaperColor
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " CUSTOM MAPPINGS
