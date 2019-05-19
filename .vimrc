@@ -20,6 +20,8 @@ set laststatus=2
 set showmatch
 set cursorline
 set cmdheight=1
+" Hide the sign column (this hides gitgutter output)
+set signcolumn=no
 set hlsearch
 " Disable tab line up top (2 enables)
 set showtabline=2
@@ -47,8 +49,6 @@ set nojoinspaces
 set autoread
 " Diffs are shown side-by-side not above/below
 set diffopt=vertical
-" Always show the sign column
-set signcolumn=no
 " Turn folding off for real, hopefully
 set foldmethod=manual
 set nofoldenable
