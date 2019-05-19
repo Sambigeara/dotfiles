@@ -116,8 +116,13 @@ set t_Co=256 " 256 colors
 set background=dark
 " Toggle between light and dark background
 map <Leader>bg :let &background = ( &background == "dark"? "light" : "dark" )<CR>
-" Custom colorscheme loaded after plugin
+" Custom colorscheme loaded after plugin install
 colorscheme PaperColor
+
+""""""""""""""""""""""""""""""""""""""""""""""""""
+" STATUS LINE
+""""""""""""""""""""""""""""""""""""""""""""""""""
+:set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " CUSTOM AUTOCMDS
