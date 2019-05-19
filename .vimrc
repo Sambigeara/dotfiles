@@ -22,7 +22,7 @@ set cursorline
 set cmdheight=1
 set hlsearch
 " Disable tab line up top (2 enables)
-set showtabline=1
+set showtabline=2
 " No backups
 set nobackup
 set nowritebackup
