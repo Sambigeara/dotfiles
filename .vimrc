@@ -7,6 +7,9 @@ autocmd!
 " BASIC CONFIGURATION
 """"""""""""""""""""""""""""""""""""""""""""""""""
 
+" Change leader from "\" to SPACE
+map <Space> <Leader>
+
 " disable vi compatibility (emulation of old bugs)
 set nocompatible
 
@@ -20,7 +23,11 @@ set laststatus=2
 set showmatch
 set cursorline
 set cmdheight=1
+set nonu
 " Hide the sign column (this hides gitgutter output)
+set winwidth=99
+set winminwidth=29
+set winheight=29
 set signcolumn=no
 set hlsearch
 " Disable tab line up top (2 enables)
@@ -93,6 +100,9 @@ let g:rg_command = '
   \ -g "!{.git,node_modules,vendor}/*" '
 command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
 
+" Scratch buffer shortcuts
+map <Leader>ss :Sscratch<enter>
+
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGINS
 """"""""""""""""""""""""""""""""""""""""""""""""""
@@ -147,9 +157,9 @@ autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 " PYTHON SPECIFC CONFIG
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Set max line width indicator for python files
-autocmd Filetype python set colorcolumn=121
+"autocmd Filetype python set colorcolumn=121
 " Set max line width indicator colour to light green
-autocmd Filetype python highlight ColorColumn ctermbg = 10
+"autocmd Filetype python highlight ColorColumn ctermbg = 10
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " FILE TYPE SPECIFIC CONFIG
