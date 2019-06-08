@@ -101,7 +101,7 @@ let g:rg_command = '
 command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
 
 " Scratch buffer shortcuts
-map <Leader>ss :Sscratch<enter>
+map <Leader>ss :Scratch<enter>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGINS
