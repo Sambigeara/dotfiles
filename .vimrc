@@ -62,6 +62,26 @@ set nofoldenable
 " Copy to system clipboard by default
 set clipboard=unnamed
 
+" Omni-completion configuration
+set omnifunc=syntaxcomplete#Complete
+"set completeopt=menu,preview
+set completeopt=longest,preview
+
+""""""""""""""""""""""""""""""""""""""""""""""""""
+" MULTIPURPOSE TAB KEY
+""""""""""""""""""""""""""""""""""""""""""""""""""
+" Indent if we're at the beginning of a line. Else, do completion.
+function! InsertTabWrapper()
+    let col = col('.') - 1
+    if !col || getline('.')[col - 1] !~ '\k'
+        return "\<tab>"
+    else
+        return "\<c-p>"
+    endif
+endfunction
+inoremap <expr> <tab> InsertTabWrapper()
+inoremap <s-tab> <c-n>
+
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " COLOURS
 """"""""""""""""""""""""""""""""""""""""""""""""""
@@ -72,11 +92,11 @@ let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 set termguicolors
 set t_Co=256 " 256 colors
-set background=dark
+set background=light
 " Toggle between light and dark background
 map <Leader>bg :let &background = ( &background == "dark"? "light" : "dark" )<CR>
-colo grb24bit
-"color PaperColor
+"colo grb24bit
+color PaperColor
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " CUSTOM MAPPINGS
@@ -103,6 +123,9 @@ command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>),
 " Scratch buffer shortcuts
 map <Leader>ss :Scratch<enter>
 
+" Regen ctags file
+map <Leader>T :!ctags -R .<enter>
+
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGINS
 """"""""""""""""""""""""""""""""""""""""""""""""""
@@ -110,7 +133,7 @@ map <Leader>ss :Scratch<enter>
 call plug#begin('~/.vim/plugged')
 
 Plug 'w0rp/ale'
-Plug 'valloric/youcompleteme'
+"Plug 'valloric/youcompleteme'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
