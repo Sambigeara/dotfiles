@@ -64,8 +64,28 @@ set clipboard=unnamed
 
 " Omni-completion configuration
 set omnifunc=syntaxcomplete#Complete
-"set completeopt=menu,preview
-set completeopt=longest,preview
+set completeopt=menu,preview
+"set completeopt=longest,preview
+
+" Enable persistent undo history. Requires .vim/undo/ to be pre-existing
+set undofile
+set undodir=$HOME/.vim/undo
+
+set undolevels=1000
+set undoreload=10000
+
+""""""""""""""""""""""""""""""""""""""""""""""""""
+" ALE config
+""""""""""""""""""""""""""""""""""""""""""""""""""
+"let g:ale_completion_enabled = 1
+"let g:ale_linters = {'python': ['pyls', 'flake8']}
+
+"set omnifunc=ale#completion#OmniFunc
+"set completeopt=longest,preview
+
+"nmap <C-]> <Plug>(ale_go_to_definition)
+" Override tag mapping to map standard jump-motion back to ctrl-t
+"map <C-t> <C-o>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " MULTIPURPOSE TAB KEY
@@ -92,7 +112,7 @@ let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 set termguicolors
 set t_Co=256 " 256 colors
-set background=light
+set background=dark
 " Toggle between light and dark background
 map <Leader>bg :let &background = ( &background == "dark"? "light" : "dark" )<CR>
 "colo grb24bit
@@ -124,7 +144,7 @@ command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>),
 map <Leader>ss :Scratch<enter>
 
 " Regen ctags file
-map <Leader>T :!ctags -R .<enter>
+map <Leader>T :AsyncRun !ctags -R .<enter>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGINS
@@ -136,9 +156,11 @@ Plug 'w0rp/ale'
 "Plug 'valloric/youcompleteme'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'tpope/vim-fugitive'
+"For vim-fugitive github integration
+Plug 'tpope/vim-rhubarb'
 Plug 'airblade/vim-gitgutter'
 "Plug 'vim-airline/vim-airline'
-Plug 'scrooloose/nerdcommenter'
+Plug 'preservim/nerdcommenter'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-surround'
 " Plugin outside ~/.vim/plugged with post-update hook
@@ -151,10 +173,16 @@ Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 
 call plug#end()
 
+" Increase default window width for nerdtree
+let g:NERDTreeWinSize=40
+
+" Align line-wise comment delimiters flush left instead of following code indentation
+let g:NERDDefaultAlign = 'left'
+
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " STATUS LINE
 """"""""""""""""""""""""""""""""""""""""""""""""""
-:set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
+set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " CUSTOM AUTOCMDS
@@ -177,12 +205,15 @@ autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
 autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
-" PYTHON SPECIFC CONFIG
+" PYTHON SPECIFIC CONFIG
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Set max line width indicator for python files
 "autocmd Filetype python set colorcolumn=121
 " Set max line width indicator colour to light green
 "autocmd Filetype python highlight ColorColumn ctermbg = 10
+
+" Run pytest for current buffer
+map <Leader>tt :!source env/bin/activate.fish && pytest -p no:warnings % <enter>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " FILE TYPE SPECIFIC CONFIG
