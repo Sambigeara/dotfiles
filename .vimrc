@@ -116,7 +116,7 @@ set background=dark
 " Toggle between light and dark background
 map <Leader>bg :let &background = ( &background == "dark"? "light" : "dark" )<CR>
 "colo grb24bit
-color PaperColor
+"color PaperColor
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " CUSTOM MAPPINGS
@@ -166,6 +166,7 @@ Plug 'tpope/vim-surround'
 " Plugin outside ~/.vim/plugged with post-update hook
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
+Plug 'fatih/vim-go'
 " Javascripty plugins that I don't use often enough anymore
 " Plug 'pangloss/vim-javascript'
 " Plug 'mxw/vim-jsx'
@@ -224,6 +225,7 @@ autocmd Filetype html setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 autocmd Filetype css setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 autocmd BufRead,BufNewFile *.vue set filetype=vue
 autocmd Filetype vue setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+autocmd BufRead,BufNewFile *yaml.gotmpl set filetype=yaml
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " MISC CONFIG
