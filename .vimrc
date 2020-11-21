@@ -63,9 +63,8 @@ set nofoldenable
 set clipboard=unnamed
 
 " Omni-completion configuration
-set omnifunc=syntaxcomplete#Complete
-set completeopt=menu,preview
-"set completeopt=longest,preview
+"set omnifunc=syntaxcomplete#Complete
+"set completeopt=menu,preview
 
 " Enable persistent undo history. Requires .vim/undo/ to be pre-existing
 set undofile
@@ -77,13 +76,15 @@ set undoreload=10000
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " ALE config
 """"""""""""""""""""""""""""""""""""""""""""""""""
-"let g:ale_completion_enabled = 1
-"let g:ale_linters = {'python': ['pyls', 'flake8']}
+let g:ale_completion_enabled = 1
+let g:ale_linters = {'python': ['pyls']}
+"let g:ale_linters = {'python': ['flake8', 'pyls', 'jedils']}
 
-"set omnifunc=ale#completion#OmniFunc
-"set completeopt=longest,preview
+set omnifunc=ale#completion#OmniFunc
+set completeopt=menu,preview
+"set completeopt=longest,menu
 
-"nmap <C-]> <Plug>(ale_go_to_definition)
+nmap <C-]> <Plug>(ale_go_to_definition)
 " Override tag mapping to map standard jump-motion back to ctrl-t
 "map <C-t> <C-o>
 
@@ -112,7 +113,7 @@ let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 set termguicolors
 set t_Co=256 " 256 colors
-set background=dark
+set background=light
 " Toggle between light and dark background
 map <Leader>bg :let &background = ( &background == "dark"? "light" : "dark" )<CR>
 "colo grb24bit
@@ -129,9 +130,6 @@ nmap <F6> :Lines<enter>
 map <C-n> :NERDTreeToggle<CR>
 " Insert pdb break point on next line
 nmap <F9> oimport pdb; pdb.set_trace()<ESC>
-" Additional functionality for tag functions
-map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
-map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
 " Incorporate ripgrep for uber fast text searches
 let g:rg_command = '
@@ -144,7 +142,7 @@ command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>),
 map <Leader>ss :Scratch<enter>
 
 " Regen ctags file
-map <Leader>T :AsyncRun !ctags -R .<enter>
+"map <Leader>T :AsyncRun !ctags -R .<enter>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGINS
@@ -152,8 +150,9 @@ map <Leader>T :AsyncRun !ctags -R .<enter>
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'w0rp/ale'
-"Plug 'valloric/youcompleteme'
+"Plug 'w0rp/ale'
+Plug 'dense-analysis/ale'
+"Plug 'prabirshrestha/vim-lsp'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'tpope/vim-fugitive'
 "For vim-fugitive github integration
