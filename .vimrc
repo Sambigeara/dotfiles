@@ -77,7 +77,8 @@ set undoreload=10000
 " ALE config
 """"""""""""""""""""""""""""""""""""""""""""""""""
 let g:ale_completion_enabled = 1
-let g:ale_linters = {'python': ['pyls']}
+let g:ale_linters = {'python': ['pyls'], 'go': ['gofmt', 'golint', 'govet']}
+"let g:ale_linters = {'python': ['pyls'], 'go': ['gofmt', 'golint', 'govet', 'golangserver']}
 "let g:ale_linters = {'python': ['flake8', 'pyls', 'jedils']}
 
 set omnifunc=ale#completion#OmniFunc
@@ -113,7 +114,7 @@ let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 set termguicolors
 set t_Co=256 " 256 colors
-set background=light
+set background=dark
 " Toggle between light and dark background
 map <Leader>bg :let &background = ( &background == "dark"? "light" : "dark" )<CR>
 "colo grb24bit
@@ -166,10 +167,8 @@ Plug 'tpope/vim-surround'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 Plug 'fatih/vim-go'
-" Javascripty plugins that I don't use often enough anymore
-" Plug 'pangloss/vim-javascript'
-" Plug 'mxw/vim-jsx'
-" Plug 'posva/vim-vue'
+" Writing tool
+Plug 'reedes/vim-pencil'
 
 call plug#end()
 
