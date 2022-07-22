@@ -25,8 +25,8 @@ set cursorline
 set cmdheight=1
 set nonu
 " Hide the sign column (this hides gitgutter output)
-set winwidth=99
-set winminwidth=29
+"set winwidth=99
+"set winminwidth=29
 set winheight=29
 set signcolumn=no
 set hlsearch
@@ -77,7 +77,10 @@ set undoreload=10000
 " ALE config
 """"""""""""""""""""""""""""""""""""""""""""""""""
 let g:ale_completion_enabled = 1
-let g:ale_linters = {'python': ['pyls'], 'go': ['gofmt', 'golint', 'govet']}
+"let g:ale_linters = {
+"\    'python': ['pyls', 'flake8'],
+"\    'go': ['gofmt', 'golint', 'govet'],
+"\}
 "let g:ale_linters = {'python': ['pyls'], 'go': ['gofmt', 'golint', 'govet', 'golangserver']}
 "let g:ale_linters = {'python': ['flake8', 'pyls', 'jedils']}
 
@@ -85,9 +88,14 @@ set omnifunc=ale#completion#OmniFunc
 set completeopt=menu,preview
 "set completeopt=longest,menu
 
-nmap <C-]> <Plug>(ale_go_to_definition)
+"nmap <C-]> <Plug>(ale_go_to_definition)
 " Override tag mapping to map standard jump-motion back to ctrl-t
 "map <C-t> <C-o>
+
+" Turn off error window
+"let g:ale_list_window_size = 0
+let g:ale_set_quickfix = 0
+let g:ale_set_loclist = 0
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " MULTIPURPOSE TAB KEY
@@ -114,9 +122,9 @@ let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 set termguicolors
 set t_Co=256 " 256 colors
-set background=dark
+set background=light
 " Toggle between light and dark background
-map <Leader>bg :let &background = ( &background == "dark"? "light" : "dark" )<CR>
+"map <Leader>bg :let &background = ( &background == "dark"? "light" : "dark" )<CR>
 "colo grb24bit
 "color PaperColor
 
@@ -143,7 +151,7 @@ command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>),
 map <Leader>ss :Scratch<enter>
 
 " Regen ctags file
-"map <Leader>T :AsyncRun !ctags -R .<enter>
+map <Leader>T :AsyncRun ctags -R .<enter>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGINS
@@ -153,7 +161,9 @@ call plug#begin('~/.vim/plugged')
 
 "Plug 'w0rp/ale'
 Plug 'dense-analysis/ale'
+"Plug 'natebosch/vim-lsc'
 "Plug 'prabirshrestha/vim-lsp'
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'tpope/vim-fugitive'
 "For vim-fugitive github integration
@@ -166,9 +176,13 @@ Plug 'tpope/vim-surround'
 " Plugin outside ~/.vim/plugged with post-update hook
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
+" Languate specific
 Plug 'fatih/vim-go'
+Plug 'pangloss/vim-javascript'
 " Writing tool
 Plug 'reedes/vim-pencil'
+" Better async job triggering
+Plug 'skywind3000/asyncrun.vim'
 
 call plug#end()
 
@@ -177,6 +191,13 @@ let g:NERDTreeWinSize=40
 
 " Align line-wise comment delimiters flush left instead of following code indentation
 let g:NERDDefaultAlign = 'left'
+
+""""""""""""""""""""""""""""""""""""""""""""""""""
+" VIM-LSC config
+""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"let g:lsc_server_commands = {'python': 'python-language-server'}
+"let g:lsc_auto_map = v:true
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " STATUS LINE
@@ -218,8 +239,8 @@ map <Leader>tt :!source env/bin/activate.fish && pytest -p no:warnings % <enter>
 " FILE TYPE SPECIFIC CONFIG
 """"""""""""""""""""""""""""""""""""""""""""""""""
 
-autocmd Filetype javascript setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
-autocmd Filetype html setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+"autocmd Filetype javascript setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+autocmd Filetype html setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 autocmd Filetype css setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 autocmd BufRead,BufNewFile *.vue set filetype=vue
 autocmd Filetype vue setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
