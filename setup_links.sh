@@ -14,4 +14,6 @@ ln -sfn $DOTFILES_DIR/fish ~/.config/fish
 # tmux
 ln -sf $DOTFILES_DIR/tmux/.tmux.conf ~/.tmux.conf
 
+git submodule update --init --recursive
+
 echo "Symlinks created."
