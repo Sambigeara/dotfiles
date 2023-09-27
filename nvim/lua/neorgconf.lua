@@ -13,7 +13,16 @@ return {
 				["core.keybinds"] = {
 					config = {
 						default_keybinds = true,
-						neorg_leader = "<Leader><Leader>",
+						neorg_leader = "<leader><leader>",
+
+						hook = function(keybinds)
+							keybinds.map(
+								"norg",
+								"n",
+								"<leader>l",
+								"<cmd>Neorg keybind norg core.looking-glass.magnify-code-block<cr>"
+							)
+						end,
 					},
 				},
 				["core.defaults"] = {}, -- Loads default behaviour
@@ -32,7 +41,7 @@ return {
 						format_on_escape = true,
 					},
 				},
-				-- ["core.looking-glass"] = {},
+				["core.looking-glass"] = {},
 				["core.integrations.nvim-cmp"] = {},
 				["core.completion"] = {
 					config = {
