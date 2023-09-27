@@ -64,9 +64,9 @@ function change_background --argument mode_setting
         case dark
             set colour tokyonight
         case light
-            # set colour "PaperColor"
+            set colour PaperColor
             # set colour gruvbox
-            set colour tokyonight
+            # set colour tokyonight
         case '*'
             echo "unknown colorscheme"
             return
