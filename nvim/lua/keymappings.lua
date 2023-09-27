@@ -1,5 +1,4 @@
 vim.g.mapleader = " "
-vim.g.maplocalleader = "\\"
 
 -- Map U to redo
 vim.api.nvim_set_keymap("n", "U", "<c-r>", { noremap = true, silent = true })
