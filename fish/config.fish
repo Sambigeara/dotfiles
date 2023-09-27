@@ -23,10 +23,6 @@ set PATH $PATH /Applications/Postgres.app/Contents/Versions/latest/bin
 # Doom Emacs
 set PATH $PATH ~/.config/emacs/bin
 
-# Github
-#set -x GITHUB_TOKEN "blah"
-#set -x GPG_TTY (tty)
-
 # FZN
 set -x FZN_EDITOR nvim
 
