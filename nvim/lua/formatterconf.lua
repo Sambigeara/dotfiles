@@ -32,9 +32,23 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 	nested = false,
 	once = false,
 	callback = function()
-		-- vim.cmd("normal! gg=G")
 		local save_cursor = vim.fn.getcurpos()
-		vim.cmd("normal! gg=G")
+		local inside_code_block = false
+		local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+
+		for i, line in ipairs(lines) do
+			if string.match(line, "@code") then
+				inside_code_block = true
+			elseif string.match(line, "@end") then
+				inside_code_block = false
+			end
+
+			if not inside_code_block then
+				vim.api.nvim_win_set_cursor(0, { i, 0 })
+				vim.cmd("normal! ==")
+			end
+		end
+
 		vim.fn.setpos(".", save_cursor)
 	end,
 })
