@@ -1,6 +1,8 @@
 -- https://github.com/mhartington/formatter.nvim#configure
 -- Utilities for creating configurations
 -- Provides the Format, FormatWrite, FormatLock, and FormatWriteLock commands
+local util = require("formatter.util")
+
 require("formatter").setup({
 	filetype = {
 		lua = { require("formatter.filetypes.lua").stylua },
@@ -9,7 +11,7 @@ require("formatter").setup({
 		typescript = { require("formatter.filetypes.typescript").prettier },
 		javascriptreact = { require("formatter.filetypes.typescript").prettier },
 		javascript = { require("formatter.filetypes.typescript").prettier },
-		yaml = { require("formatter.filetypes.yaml").prettier },
+		-- yaml = { require("formatter.filetypes.yaml").yamlfmt },
 		css = { require("formatter.filetypes.css").prettier },
 		fish = { require("formatter.filetypes.fish").fishindent },
 		python = { require("formatter.filetypes.python").black },
@@ -33,22 +35,26 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 	once = false,
 	callback = function()
 		local save_cursor = vim.fn.getcurpos()
-		local inside_code_block = false
-		local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
 
-		for i, line in ipairs(lines) do
-			if string.match(line, "@code") then
-				inside_code_block = true
-			elseif string.match(line, "@end") then
-				inside_code_block = false
-			end
+		-- -- ignore text within code blocks
+		-- -- (the issue seen previously might just be because of lack of treesitter support for the given language?)
+		-- local inside_code_block = false
+		-- local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+		--
+		-- for i, line in ipairs(lines) do
+		-- 	if string.match(line, "@code") then
+		-- 		inside_code_block = true
+		-- 	elseif string.match(line, "@end") then
+		-- 		inside_code_block = false
+		-- 	end
+		--
+		-- 	if not inside_code_block then
+		-- 		vim.api.nvim_win_set_cursor(0, { i, 0 })
+		-- 		vim.cmd("normal! ==")
+		-- 	end
+		-- end
 
-			if not inside_code_block then
-				vim.api.nvim_win_set_cursor(0, { i, 0 })
-				vim.cmd("normal! ==")
-			end
-		end
-
+		vim.cmd("normal! gg=G")
 		vim.fn.setpos(".", save_cursor)
 	end,
 })
