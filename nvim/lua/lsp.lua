@@ -3,9 +3,9 @@ local util = require("lspconfig/util")
 
 local servers = {
 	gopls = {
-		cmd = { "gopls", "serve" },
-		filetypes = { "go", "gomod" },
-		root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+		-- cmd = { "gopls", "serve" },
+		-- filetypes = { "go", "gomod" },
+		-- root_dir = util.root_pattern("go.work", "go.mod", ".git"),
 		settings = {
 			gopls = {
 				staticcheck = true,

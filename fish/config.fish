@@ -14,9 +14,6 @@ set PATH $GOPATH/bin $PATH
 # nix-env bin path
 set PATH ~/.nix-profile/bin $PATH
 
-# Cerbos
-set -x GOPRIVATE "github.com/cerbos/cloud-api"
-
 # Postgres
 set PATH $PATH /Applications/Postgres.app/Contents/Versions/latest/bin
 

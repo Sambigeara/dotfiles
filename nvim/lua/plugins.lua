@@ -123,7 +123,7 @@ require("lazy").setup({
 			require("formatterconf")
 		end,
 	},
-	{ "mattn/vim-goimports" },
+	-- { "mattn/vim-goimports" },
 	{
 		"nvim-lualine/lualine.nvim",
 		config = function()
@@ -143,8 +143,10 @@ require("lazy").setup({
 	-- Show tab lines
 	{
 		"lukas-reineke/indent-blankline.nvim",
+		main = "ibl",
+		opts = {},
 		config = function()
-			require("indent_blankline").setup({})
+			require("ibl").setup()
 		end,
 	},
 
