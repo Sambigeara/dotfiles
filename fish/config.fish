@@ -4,7 +4,10 @@ end
 
 set -gx PATH /opt/homebrew/bin $PATH
 
-set -x EDITOR hx
+# Brew `node` installation due to spitfire/ui issues: https://github.com/airbnb/lottie-web/issues/2739
+set PATH /opt/homebrew/opt/node@20/bin $PATH
+
+set -x EDITOR nvim
 
 # Go
 set -x GOPATH $HOME/go

@@ -15,8 +15,10 @@ require("formatter").setup({
 		css = { require("formatter.filetypes.css").prettier },
 		fish = { require("formatter.filetypes.fish").fishindent },
 		python = { require("formatter.filetypes.python").black },
-		go = { require("formatter.filetypes.go").goimports },
 		--sql = { require("formatter.filetypes.sql").pgformat },
+
+		-- I use mattn/vim-goimports because nvim formatting deletes marks: https://github.com/neovim/neovim/issues/14307
+		-- go = { require("formatter.filetypes.go").goimports },
 
 		-- Use the special "*" filetype for defining formatter configurations on
 		-- any filetype
@@ -56,13 +58,6 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 
 		vim.cmd("normal! gg=G")
 		vim.fn.setpos(".", save_cursor)
-	end,
-})
-
-vim.api.nvim_create_autocmd("BufWritePre", {
-	pattern = "*.go",
-	callback = function()
-		vim.lsp.buf.code_action({ context = { only = { "source.organizeImports" } }, apply = true })
 	end,
 })
 

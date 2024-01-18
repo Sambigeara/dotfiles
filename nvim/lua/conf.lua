@@ -13,7 +13,7 @@ vim.opt.undofile = true
 vim.opt.undodir = vim.fn.expand("$HOME/.vim/undo")
 vim.opt.undolevels = 1000
 vim.opt.undoreload = 10000
-vim.opt.nu = true
+vim.opt.nu = false
 
 -- When editing a file, always jump to the last known cursor position.
 -- Don't do it when the position is invalid or when inside an event handler

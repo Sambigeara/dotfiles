@@ -64,6 +64,24 @@ local servers = {
 	cssls = {},
 	bufls = {},
 	yamlls = {},
+	efm = {
+		root_dir = require("lspconfig").util.root_pattern({ ".git/", "." }),
+		settings = {
+			rootMarkers = { ".git/" },
+			languages = {
+				sh = {
+					{
+						lintCommand = "shellcheck -f gcc -x",
+						lintSource = "shellcheck",
+					},
+				},
+			},
+		},
+		filetypes = {
+			"sh",
+		},
+		single_file_support = false, -- This is the important line for supporting older version of EFM
+	},
 }
 
 -- Add additional capabilities supported by nvim-cmp
