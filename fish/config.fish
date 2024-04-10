@@ -71,8 +71,8 @@ alias k kubectl
 alias tailscale /Applications/Tailscale.app/Contents/MacOS/Tailscale
 
 # neorg
-alias n "vim ~/notes/index.norg"
-alias cdn "cd ~/notes && vim index.norg"
+#alias n "vim ~/notes/index.norg"
+#alias cdn "cd ~/notes && vim index.norg"
 
 # Vim mode
 set -g fish_key_bindings fish_vi_key_bindings

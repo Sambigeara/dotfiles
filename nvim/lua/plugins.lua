@@ -154,4 +154,4 @@ require("lazy").setup({
 	require("neorgconf"),
 })
 
-require("colorconf")
+-- require("colorconf")
