@@ -1,3 +1,3 @@
-local colour = "PaperColor"
-vim.cmd(string.format("colorscheme %s", colour))
-return colour
+-- local colour = "PaperColor"
+-- vim.cmd(string.format("colorscheme %s", colour))
+-- return colour

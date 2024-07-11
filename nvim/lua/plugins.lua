@@ -43,7 +43,8 @@ require("lazy").setup({
 			vim.keymap.set(
 				"n",
 				"<F5>",
-				'<cmd>lua require(\'fzf-lua\').buffers({fzf_opts={["--delimiter"]="\' \'",["--with-nth"]="-1.."}})<CR>',
+				-- '<cmd>lua require(\'fzf-lua\').buffers({fzf_opts={["--delimiter"]="\' \'",["--with-nth"]="-1.."}})<CR>',
+				"<cmd>lua require('fzf-lua').buffers()<CR>",
 				{ silent = true }
 			)
 			vim.keymap.set("n", "<F6>", "<cmd>lua require('fzf-lua').lines()<CR>", { silent = true })
@@ -88,28 +89,28 @@ require("lazy").setup({
 		end,
 	},
 
-	{
-		"NLKNguyen/papercolor-theme",
-		-- config = function()
-		-- 	require("colorconf")
-		-- end,
-	},
-	{
-		"folke/tokyonight.nvim",
-		lazy = false,
-		priority = 1000,
-		opts = {},
-		-- config = function()
-		-- 	require("colorconf")
-		-- end,
-	},
-	{
-		"ellisonleao/gruvbox.nvim",
-		-- config = function()
-		-- 	require("colorconf")
-		-- end,
-		priority = 1000,
-	},
+	-- {
+	-- 	"NLKNguyen/papercolor-theme",
+	-- 	-- config = function()
+	-- 	-- 	require("colorconf")
+	-- 	-- end,
+	-- },
+	-- {
+	-- 	"folke/tokyonight.nvim",
+	-- 	lazy = false,
+	-- 	priority = 1000,
+	-- 	opts = {},
+	-- 	-- config = function()
+	-- 	-- 	require("colorconf")
+	-- 	-- end,
+	-- },
+	-- {
+	-- 	"ellisonleao/gruvbox.nvim",
+	-- 	-- config = function()
+	-- 	-- 	require("colorconf")
+	-- 	-- end,
+	-- 	priority = 1000,
+	-- },
 
 	{
 		"windwp/nvim-autopairs",
@@ -151,7 +152,7 @@ require("lazy").setup({
 	-- },
 
 	require("treesitter"),
-	require("neorgconf"),
+	-- require("neorgconf"),
 })
 
 -- require("colorconf")

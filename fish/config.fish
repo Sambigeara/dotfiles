@@ -32,6 +32,9 @@ set -x HELM_SECRETS_BACKEND vals
 # Rust
 set PATH $HOME/.cargo/bin $PATH
 
+# TEMP NVIM OVERRIDE COS 0.10.0 IS CAUSING ISSUES and I've installed 0.9.5 manually in my home dir
+# set PATH $HOME/bin/nvim-macos/bin $PATH
+
 alias vim nvim
 alias dc docker-compose
 

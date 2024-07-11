@@ -1,5 +1,5 @@
 local lspconfig = require("lspconfig")
-local util = require("lspconfig/util")
+-- local util = require("lspconfig/util")
 
 local servers = {
 	gopls = {
@@ -37,7 +37,9 @@ local servers = {
 							-- or pull in all of 'runtimepath'. NOTE: this is a lot slower
 							-- library = vim.api.nvim_get_runtime_file("", true)
 						},
-						diagnostics = { "vim" },
+						diagnostics = {
+							globals = { "vim" },
+						},
 					},
 				})
 
@@ -61,11 +63,12 @@ local servers = {
 	pyright = {},
 	-- pylsp = {},
 	rust_analyzer = {},
+	zls = {},
 	cssls = {},
 	bufls = {},
 	yamlls = {},
 	efm = {
-		root_dir = require("lspconfig").util.root_pattern({ ".git/", "." }),
+		root_dir = lspconfig.util.root_pattern({ ".git/", "." }),
 		settings = {
 			rootMarkers = { ".git/" },
 			languages = {
@@ -85,7 +88,9 @@ local servers = {
 }
 
 -- Add additional capabilities supported by nvim-cmp
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
+local client_capabilities = vim.lsp.protocol.make_client_capabilities()
+local completion_capabilities = require("cmp_nvim_lsp").default_capabilities()
+local capabilities = vim.tbl_deep_extend("force", client_capabilities, completion_capabilities)
 
 for server, config in pairs(servers) do
 	config.capabilities = capabilities
@@ -112,6 +117,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		-- vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
 		vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, opts)
 		vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, opts)
+		vim.keymap.set("n", "<space>ws", vim.lsp.buf.workspace_symbol, opts)
 		vim.keymap.set("n", "<space>wl", function()
 			print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 		end, opts)

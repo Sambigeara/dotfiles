@@ -6,7 +6,8 @@ vim.opt.smarttab = true -- auto tab to appropriate location
 vim.opt.clipboard = "unnamed"
 
 -- vim.opt.t_Co = 256
--- vim.opt.termguicolors = true
+-- https://github.com/neovim/neovim/issues/28927#issuecomment-2127496459
+-- vim.opt.termguicolors = false
 vim.opt.background = "light"
 
 vim.opt.undofile = true
