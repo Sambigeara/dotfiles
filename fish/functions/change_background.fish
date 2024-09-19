@@ -26,7 +26,7 @@ function change_background --argument mode_setting
         echo "file ~/.config/nvim/lua/conf.lua doesn't exist"
         return
     end
-    set -l nvim_conf_path (realpath ~/.config/nvim/lua/conf.lua)
+    set -l nvim_conf_path (realpath ~/.config/nvim/init.lua)
 
     set -l current_mode (awk -F'"' '/vim.opt.background/ {print $2}' $nvim_conf_path)
 
@@ -53,40 +53,43 @@ function change_background --argument mode_setting
     sed -i "" -e "s#^vim.opt.background = .*#vim.opt.background = \"$mode\"#g" $nvim_conf_path
 
     # Update colour which is used for both global nvim colorscheme, and lualine colour conf
-    if ! test -f ~/.config/nvim/lua/colorconf.lua
-        echo "file ~/.config/nvim/lua/colorconf.lua doesn't exist"
-        return
-    end
-    set -l colour_path (realpath ~/.config/nvim/lua/colorconf.lua)
-
-    set -l colour ""
-    switch $mode
-        case dark
-            set colour tokyonight
-        case light
-            set colour PaperColor
-            # set colour gruvbox
-            # set colour tokyonight
-        case '*'
-            echo "unknown colorscheme"
-            return
-    end
-
-    # Update colour for new nvim instances
-    sed -i "" -e "s#^local colour = .*#local colour = \"$colour\"#g" $colour_path
+    # if ! test -f ~/.config/nvim/lua/colorconf.lua
+    #     echo "file ~/.config/nvim/lua/colorconf.lua doesn't exist"
+    #     return
+    # end
+    # set -l colour_path (realpath ~/.config/nvim/lua/colorconf.lua)
+    #
+    # set -l colour ""
+    # switch $mode
+    #     case dark
+    #         # set colour tokyonight
+    #         set colour PaperColor
+    #     case light
+    #         set colour PaperColor
+    #         # set colour gruvbox
+    #         # set colour tokyonight
+    #     case '*'
+    #         echo "unknown colorscheme"
+    #         return
+    # end
+    #
+    # # Update colour for new nvim instances
+    # sed -i "" -e "s#^local colour = .*#local colour = \"$colour\"#g" $colour_path
 
     # change neovim
     for addr in (/opt/homebrew/bin/nvr --serverlist)
-        /opt/homebrew/bin/nvr --servername "$addr" -c "set background=$mode | colorscheme $colour | lua require('lualine').setup({options={theme=\"$colour\"}})"
+        # /opt/homebrew/bin/nvr --servername "$addr" -c "set background=$mode | colorscheme $colour | lua require('lualine').setup({options={theme=\"$colour\"}})"
+        /opt/homebrew/bin/nvr --servername "$addr" -c "set background=$mode"
     end
 
     # change alacritty
     switch $mode
         case dark
-            alacritty-theme tokyo-night
+            alacritty-theme tokyo-night-storm
         case light
             alacritty-theme pencil_light
             # alacritty-theme gruvbox_light
+            # alacritty-theme tokyo-night-storm 
     end
 end
 

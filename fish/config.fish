@@ -35,6 +35,9 @@ set PATH $HOME/.cargo/bin $PATH
 # TEMP NVIM OVERRIDE COS 0.10.0 IS CAUSING ISSUES and I've installed 0.9.5 manually in my home dir
 # set PATH $HOME/bin/nvim-macos/bin $PATH
 
+# Use GNU make as `make` (by default, it's installed as `gmake`)
+set PATH /opt/homebrew/opt/make/libexec/gnubin $PATH
+
 alias vim nvim
 alias dc docker-compose
 

@@ -32,6 +32,7 @@ shift + alt - f : yabai -m window --toggle float --grid 4:4:1:1:2:2
 
 # -- Modifying Window Size --
 
+# for future ref: https://github.com/koekeishiya/skhd/issues/49
 # zoom
 alt - z : yabai -m window --toggle zoom-fullscreen
 
