@@ -26,15 +26,6 @@ vim.opt.rtp:prepend(lazypath)
 --   end
 -- end
 
--- run :GoBuild or :GoTestCompile based on the go file
-local function build_go_files()
-  if vim.endswith(vim.api.nvim_buf_get_name(0), "_test.go") then
-    vim.cmd("GoTestCompile")
-  else
-    vim.cmd("GoBuild")
-  end
-end
-
 ----------------
 --- plugins ---
 ----------------
@@ -128,24 +119,13 @@ require("lazy").setup({
   },
 
   -- search selection via *
-  { "bronson/vim-visual-star-search" },
+  -- { "bronson/vim-visual-star-search" },
 
-  -- testing framework
   {
-    "vim-test/vim-test",
-    config = function()
-      vim.g["test#strategy"] = "neovim"
-      vim.g["test#neovim#start_normal"] = "1"
-      vim.g["test#neovim#term_position"] = "vert"
-      vim.g["test#go#gotest#options"] = "-tags=tests,integration"
-    end,
+    "tpope/vim-rhubarb",
   },
-
   {
-    "dinhhuy258/git.nvim",
-    config = function()
-      require("git").setup()
-    end,
+    "tpope/vim-fugitive",
   },
 
   -- file explorer
@@ -194,30 +174,6 @@ require("lazy").setup({
     end,
   },
 
-  -- markdown
-  -- {
-  --   "iamcco/markdown-preview.nvim",
-  --   dependencies = {
-  --     "zhaozg/vim-diagram",
-  --     "aklt/plantuml-syntax",
-  --   },
-  --   build = function()
-  --     vim.fn["mkdp#util#install"]()
-  --   end,
-  --   ft = "markdown",
-  --   cmd = { "MarkdownPreview" },
-  -- },
-  -- {
-  --   "preservim/vim-markdown",
-  --   dependencies = {
-  --     "godlygeek/tabular",
-  --   },
-  --   init = function()
-  --     vim.o.conceallevel = 2
-  --   end,
-  --   ft = "markdown",
-  -- },
-
   -- commenting out lines
   {
     "numToStr/Comment.nvim",
@@ -265,6 +221,7 @@ require("lazy").setup({
         --   -- sorting_strategy = "ascending",
           layout_strategy = "vertical",
           layout_config = { height = 0.97, width = 0.97 },
+          file_ignore_patterns = {"frontend/node_modules/", ".git"},
         },
         extensions = {
           fzf = {
@@ -287,10 +244,10 @@ require("lazy").setup({
     end,
   },
 
-  {
-    "preservim/vim-pencil",
-    ft = {"markdown", "asciidoc", "text"},
-  },
+  -- {
+  --   "preservim/vim-pencil",
+  --   ft = {"markdown", "asciidoc", "text"},
+  -- },
 
   -- lsp-config
   {
@@ -610,7 +567,7 @@ vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
 vim.opt.termguicolors = true                      -- Enable 24-bit RGB colors
-vim.opt.background = "dark"
+vim.opt.background = "light"
 
 vim.opt.number = false                            -- Hide line numbers
 vim.opt.showmatch = true                          -- Highlight matching parenthesis
@@ -660,8 +617,8 @@ vim.keymap.set("n", "<Leader><space>", ":nohlsearch<CR>")
 
 -- Search mappings: These will make it so that going to the next one in a
 -- search will center on the line it's found in.
-vim.keymap.set("n", "n", "nzzzv", { noremap = true })
-vim.keymap.set("n", "N", "Nzzzv", { noremap = true })
+-- vim.keymap.set("n", "n", "nzzzv", { noremap = true })
+-- vim.keymap.set("n", "N", "Nzzzv", { noremap = true })
 
 -- Don't jump forward if I higlight and search for a word
 local function stay_star()
@@ -746,36 +703,30 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 
 -- git.nvim
-vim.keymap.set("n", "<leader>gb", '<CMD>lua require("git.blame").blame()<CR>')
-vim.keymap.set("n", "<leader>go", "<CMD>lua require('git.browse').open(false)<CR>")
-vim.keymap.set("x", "<leader>go", ":<C-u> lua require('git.browse').open(true)<CR>")
-
--- old habits
-vim.api.nvim_create_user_command("GBrowse", 'lua require("git.browse").open(true)<CR>', {
-  range = true,
-  bang = true,
-  nargs = "*",
-})
+vim.keymap.set("n", "<leader>gd", '<CMD>Gdiffsplit<CR>')
+vim.keymap.set("n", "<leader>gb", '<CMD>Git blame<CR>')
+vim.keymap.set("n", "<leader>go", "<CMD>GBrowse<CR>")
+vim.keymap.set("x", "<leader>go", ":<C-u> GBrowse<CR>")
 
 -- File-tree mappings
 vim.keymap.set("n", "<C-n>", ":NvimTreeToggle<CR>", { noremap = true })
 vim.keymap.set("n", "<leader>gf", ":NvimTreeFindFileToggle!<CR>", { noremap = true })
 
--- vim-test
-vim.keymap.set("n", "<leader>tt", ":TestNearest<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<leader>tf", ":TestFile<CR>", { noremap = true, silent = true })
-
 -- telescope
 local builtin = require("telescope.builtin")
-vim.keymap.set("n", "<F3>", builtin.git_files, {})
--- vim.keymap.set("n", "<C-b>", builtin.find_files, {})
--- vim.keymap.set("n", "<F3>", builtin.find_files, {})
+-- vim.keymap.set("n", "<F3>", builtin.git_files, {})
+vim.keymap.set("n", "<F3>", function() builtin.find_files({hidden = true, no_ignore = true}) end, {})
 -- vim.keymap.set("n", "<F5>", builtin.buffers, {})
 -- https://github.com/nvim-telescope/telescope.nvim/blob/74ce793a60759e3db0d265174f137fb627430355/doc/telescope.txt#L1408-L1413
 vim.keymap.set("n", "<F5>", function()
-  builtin.buffers({ sort_lastused = true })
-  -- builtin.buffers({ sort_mru = true })
+  -- builtin.buffers({ sort_lastused = true })
+  builtin.buffers({ sort_mru = true, ignore_current_buffer = true })
 end, {})
+
+-- Search for TODO(saml)
+vim.keymap.set("n", "<F7>", function() builtin.grep_string({ search = 'TODO(saml)' }) end, {})
+
+-- vim.keymap.set("n", "<F9>", builtin.planets, {})
 vim.keymap.set("n", "<F6>", builtin.lsp_dynamic_workspace_symbols, {})
 vim.keymap.set("n", "<C-g>", builtin.lsp_document_symbols, {})
 vim.keymap.set("n", "gi", builtin.lsp_implementations, {})
@@ -790,12 +741,6 @@ vim.keymap.set("n", "<leader>dp", vim.diagnostic.goto_prev)
 vim.keymap.set("n", "<leader>dn", vim.diagnostic.goto_next)
 vim.keymap.set("n", "<leader>ds", vim.diagnostic.setqflist)
 
--- vim-go
-vim.keymap.set("n", "<leader>b", build_go_files)
-
--- disable diagnostics, I didn't like them
--- vim.lsp.handlers["textDocument/publishDiagnostics"] = function() end
-
 -- Go uses gofmt, which uses tabs for indentation and spaces for aligment.
 -- Hence override our indentation rules.
 vim.api.nvim_create_autocmd("Filetype", {
@@ -806,25 +751,46 @@ vim.api.nvim_create_autocmd("Filetype", {
 
 
 -- Run gofmt/gofmpt, import packages automatically on save
+-- vim.api.nvim_create_autocmd('BufWritePre', {
+--   group = vim.api.nvim_create_augroup('setGoFormatting', { clear = true }),
+--   pattern = '*.go',
+--   callback = function()
+--     local params = vim.lsp.util.make_range_params()
+--     params.context = { only = { "source.organizeImports" } }
+--     local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 2000)
+--     for _, res in pairs(result or {}) do
+--       for _, r in pairs(res.result or {}) do
+--         if r.edit then
+--           vim.lsp.util.apply_workspace_edit(r.edit, "utf-16")
+--         else
+--           vim.lsp.buf.execute_command(r.command)
+--         end
+--       end
+--     end
+--     vim.lsp.buf.format()
+--   end
+-- })
 vim.api.nvim_create_autocmd("BufWritePre", {
-  group = vim.api.nvim_create_augroup("setGoFormatting", { clear = true }),
   pattern = "*.go",
   callback = function()
     local params = vim.lsp.util.make_range_params()
-    params.context = { only = { "source.organizeImports" } }
-    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 2000)
-    for _, res in pairs(result or {}) do
+    params.context = {only = {"source.organizeImports"}}
+    -- buf_request_sync defaults to a 1000ms timeout. Depending on your
+    -- machine and codebase, you may want longer. Add an additional
+    -- argument after params if you find that you have to write the file
+    -- twice for changes to be saved.
+    -- E.g., vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
+    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
+    for cid, res in pairs(result or {}) do
       for _, r in pairs(res.result or {}) do
         if r.edit then
-          vim.lsp.util.apply_workspace_edit(r.edit, "utf-16")
-        else
-          vim.lsp.buf.execute_command(r.command)
+          local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
+          vim.lsp.util.apply_workspace_edit(r.edit, enc)
         end
       end
     end
-
-    vim.lsp.buf.format()
-  end,
+    vim.lsp.buf.format({async = true})
+  end
 })
 
 -- Use LspAttach autocommand to only map the following keys

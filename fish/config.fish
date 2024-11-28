@@ -32,17 +32,15 @@ set -x HELM_SECRETS_BACKEND vals
 # Rust
 set PATH $HOME/.cargo/bin $PATH
 
-# TEMP NVIM OVERRIDE COS 0.10.0 IS CAUSING ISSUES and I've installed 0.9.5 manually in my home dir
-# set PATH $HOME/bin/nvim-macos/bin $PATH
-
 # Use GNU make as `make` (by default, it's installed as `gmake`)
 set PATH /opt/homebrew/opt/make/libexec/gnubin $PATH
 
 alias vim nvim
 alias dc docker-compose
 
-# pyenv
-pyenv init - | source
+# TODO(saml) uncommenting this pyenv line causes horrendous slowdowns on fish startup
+# # pyenv
+# pyenv init - | source
 
 # tmux
 
@@ -83,12 +81,15 @@ alias tailscale /Applications/Tailscale.app/Contents/MacOS/Tailscale
 # Vim mode
 set -g fish_key_bindings fish_vi_key_bindings
 
-status --is-interactive; and rbenv init - fish | source
+# TODO(saml) line causes startup slowdown
+# status --is-interactive; and rbenv init - fish | source
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/samuellock/google-cloud-sdk/path.fish.inc' ]
     . '/Users/samuellock/google-cloud-sdk/path.fish.inc'
 end
 
-set -q GHCUP_INSTALL_BASE_PREFIX[1]; or set GHCUP_INSTALL_BASE_PREFIX $HOME
-set -gx PATH $HOME/.cabal/bin /Users/samuellock/.ghcup/bin $PATH # ghcup-env
+# Haskell
+# TODO(saml) causes slight slowdowns
+# set -q GHCUP_INSTALL_BASE_PREFIX[1]; or set GHCUP_INSTALL_BASE_PREFIX $HOME
+# set -gx PATH $HOME/.cabal/bin /Users/samuellock/.ghcup/bin $PATH # ghcup-env
