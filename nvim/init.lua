@@ -131,6 +131,8 @@ require("lazy").setup({
   {
     "nvim-tree/nvim-tree.lua",
     version = "*",
+    -- Lazy-load on these key bindings:
+    cmd = { "NvimTreeToggle", "NvimTreeFindFileToggle" },
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       require("nvim-tree").setup({
@@ -198,55 +200,91 @@ require("lazy").setup({
   },
 
   -- fzf extension for telescope with better speed
-  {
-    "nvim-telescope/telescope-fzf-native.nvim",
-    run = "make",
-  },
-
-  { "nvim-telescope/telescope-ui-select.nvim" },
-
-  -- fuzzy finder framework
-  {
-    "nvim-telescope/telescope.nvim",
-    tag = "0.1.4",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-      "nvim-tree/nvim-web-devicons",
-    },
-    config = function()
-      require("telescope").setup({
-        defaults = {
-        --   -- sorting_strategy = "ascending",
-          layout_strategy = "vertical",
-          layout_config = { height = 0.97, width = 0.97 },
-          file_ignore_patterns = {"frontend/node_modules/", ".git"},
-        },
-        extensions = {
-          fzf = {
-            fuzzy = true,                   -- false will only do exact matching
-            override_generic_sorter = true, -- override the generic sorter
-            override_file_sorter = true,    -- override the file sorter
-            case_mode = "smart_case",       -- or "ignore_case" or "respect_case"
-            -- the default case_mode is "smart_case"
-          },
-        },
-      })
-
-      -- To get fzf loaded and working with telescope, you need to call
-      -- load_extension, somewhere after setup function:
-      require("telescope").load_extension("fzf")
-
-      -- To get ui-select loaded and working with telescope, you need to call
-      -- load_extension, somewhere after setup function:
-      require("telescope").load_extension("ui-select")
-    end,
-  },
+  -- {
+  --   "nvim-telescope/telescope-fzf-native.nvim",
+  --   run = "make",
+  -- },
+  --
+  -- { "nvim-telescope/telescope-ui-select.nvim" },
+  --
+  -- -- fuzzy finder framework
+  -- {
+  --   "nvim-telescope/telescope.nvim",
+  --   tag = "0.1.4",
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-treesitter/nvim-treesitter",
+  --     "nvim-tree/nvim-web-devicons",
+  --   },
+  --   config = function()
+  --     require("telescope").setup({
+  --       defaults = {
+  --       --   -- sorting_strategy = "ascending",
+  --         layout_strategy = "vertical",
+  --         layout_config = { height = 0.97, width = 0.97 },
+  --         file_ignore_patterns = {"frontend/node_modules/", ".git"},
+  --       },
+  --       extensions = {
+  --         fzf = {
+  --           fuzzy = true,                   -- false will only do exact matching
+  --           override_generic_sorter = true, -- override the generic sorter
+  --           override_file_sorter = true,    -- override the file sorter
+  --           case_mode = "smart_case",       -- or "ignore_case" or "respect_case"
+  --           -- the default case_mode is "smart_case"
+  --         },
+  --       },
+  --     })
+  --
+  --     -- To get fzf loaded and working with telescope, you need to call
+  --     -- load_extension, somewhere after setup function:
+  --     require("telescope").load_extension("fzf")
+  --
+  --     -- To get ui-select loaded and working with telescope, you need to call
+  --     -- load_extension, somewhere after setup function:
+  --     require("telescope").load_extension("ui-select")
+  --   end,
+  -- },
 
   -- {
   --   "preservim/vim-pencil",
   --   ft = {"markdown", "asciidoc", "text"},
   -- },
+
+  {
+    "junegunn/fzf",
+    build = "./install --bin",
+    event = "VeryLazy",
+  },
+  {
+    "junegunn/fzf.vim",
+    event = "VeryLazy",
+    config = function()
+      -- Files (similar to <F3> find_files)
+      vim.keymap.set("n", "<F3>", ":Files<CR>", { noremap = true, silent = true })
+
+      -- Buffers (similar to <F5> telescope.buffers)
+      vim.keymap.set("n", "<F5>", ":Buffers<CR>", { noremap = true, silent = true })
+
+      -- Grep for “TODO(saml)” (similar to <F7> grep_string)
+      vim.keymap.set("n", "<F7>", ":Rg TODO(saml)<CR>", { noremap = true, silent = true })
+
+      -- Live grep (similar to <leader>gg telescope.live_grep)
+      vim.keymap.set("n", "<leader>gg", ":Rg<CR>", { noremap = true, silent = true })
+
+      -- Grep under cursor (similar to <leader>gs grep_string)
+      vim.keymap.set("n", "<leader>gs", ":Rg <C-r><C-w><CR>", { noremap = true, silent = true })
+    end
+  },
+
+  {
+    "gfanto/fzf-lsp.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      vim.keymap.set("n", "gr", ":References<CR>")
+      vim.keymap.set("n", "gi", ":Implementations<CR>")
+      -- etc.
+    end
+  },
 
   -- lsp-config
   {
@@ -723,27 +761,27 @@ vim.keymap.set("n", "<C-n>", ":NvimTreeToggle<CR>", { noremap = true })
 vim.keymap.set("n", "<leader>gf", ":NvimTreeFindFileToggle!<CR>", { noremap = true })
 
 -- telescope
-local builtin = require("telescope.builtin")
--- vim.keymap.set("n", "<F3>", builtin.git_files, {})
-vim.keymap.set("n", "<F3>", function() builtin.find_files({hidden = true, no_ignore = true}) end, {})
--- vim.keymap.set("n", "<F5>", builtin.buffers, {})
--- https://github.com/nvim-telescope/telescope.nvim/blob/74ce793a60759e3db0d265174f137fb627430355/doc/telescope.txt#L1408-L1413
-vim.keymap.set("n", "<F5>", function()
-  -- builtin.buffers({ sort_lastused = true })
-  builtin.buffers({ sort_mru = true, ignore_current_buffer = true })
-end, {})
-
--- Search for TODO(saml)
-vim.keymap.set("n", "<F7>", function() builtin.grep_string({ search = 'TODO(saml)' }) end, {})
-
--- vim.keymap.set("n", "<F9>", builtin.planets, {})
-vim.keymap.set("n", "<F6>", builtin.lsp_dynamic_workspace_symbols, {})
-vim.keymap.set("n", "<C-g>", builtin.lsp_document_symbols, {})
-vim.keymap.set("n", "gi", builtin.lsp_implementations, {})
-vim.keymap.set("n", "gr", builtin.lsp_references, {})
-vim.keymap.set("n", "<leader>td", builtin.diagnostics, {})
-vim.keymap.set("n", "<leader>gs", builtin.grep_string, {})
-vim.keymap.set("n", "<leader>gg", builtin.live_grep, {})
+-- local builtin = require("telescope.builtin")
+-- -- vim.keymap.set("n", "<F3>", builtin.git_files, {})
+-- vim.keymap.set("n", "<F3>", function() builtin.find_files({hidden = true, no_ignore = true}) end, {})
+-- -- vim.keymap.set("n", "<F5>", builtin.buffers, {})
+-- -- https://github.com/nvim-telescope/telescope.nvim/blob/74ce793a60759e3db0d265174f137fb627430355/doc/telescope.txt#L1408-L1413
+-- vim.keymap.set("n", "<F5>", function()
+--   -- builtin.buffers({ sort_lastused = true })
+--   builtin.buffers({ sort_mru = true, ignore_current_buffer = true })
+-- end, {})
+--
+-- -- Search for TODO(saml)
+-- vim.keymap.set("n", "<F7>", function() builtin.grep_string({ search = 'TODO(saml)' }) end, {})
+--
+-- -- vim.keymap.set("n", "<F9>", builtin.planets, {})
+-- vim.keymap.set("n", "<F6>", builtin.lsp_dynamic_workspace_symbols, {})
+-- vim.keymap.set("n", "<C-g>", builtin.lsp_document_symbols, {})
+-- vim.keymap.set("n", "gi", builtin.lsp_implementations, {})
+-- vim.keymap.set("n", "gr", builtin.lsp_references, {})
+-- vim.keymap.set("n", "<leader>td", builtin.diagnostics, {})
+-- vim.keymap.set("n", "<leader>gs", builtin.grep_string, {})
+-- vim.keymap.set("n", "<leader>gg", builtin.live_grep, {})
 
 -- diagnostics
 vim.keymap.set("n", "<leader>do", vim.diagnostic.open_float)
