@@ -99,7 +99,6 @@ require("lazy").setup({
     end,
   },
 
-  -- you know the drill
   {
     "fatih/vim-go",
     config = function()
@@ -491,7 +490,7 @@ require("lazy").setup({
             and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
       end
 
-      require("cmp").setup({
+      cmp.setup({
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
@@ -553,6 +552,17 @@ require("lazy").setup({
           { name = "luasnip", keyword_length = 2 },
           { name = "buffer",  keyword_length = 5 },
         },
+        enabled = function()
+          -- disable completion in comments
+          local context = require 'cmp.config.context'
+          -- keep command mode completion enabled when cursor is in a comment
+          if vim.api.nvim_get_mode().mode == 'c' then
+            return true
+          else
+            return not context.in_treesitter_capture("comment")
+              and not context.in_syntax_group("Comment")
+          end
+        end
       })
     end,
   },
@@ -703,7 +713,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 
 -- git.nvim
-vim.keymap.set("n", "<leader>gd", '<CMD>Gdiffsplit<CR>')
+vim.keymap.set("n", "<leader>gd", '<CMD>Gvdiffsplit<CR>')
 vim.keymap.set("n", "<leader>gb", '<CMD>Git blame<CR>')
 vim.keymap.set("n", "<leader>go", "<CMD>GBrowse<CR>")
 vim.keymap.set("x", "<leader>go", ":<C-u> GBrowse<CR>")

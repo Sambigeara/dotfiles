@@ -1,0 +1,22 @@
+theme = dark:tokyonight_moon,light:tokyonight-day
+window-theme = light
+
+font-family = "hack nerd font"
+font-family-bold = "hack nerd font"
+font-family-italic = "hack nerd font"
+font-family-bold-italic = "hack nerd font"
+font-size = 18
+#font-thicken = true
+
+keybind = unconsumed:ctrl+z=toggle_split_zoom
+keybind = unconsumed:ctrl+h=goto_split:left
+keybind = unconsumed:ctrl+l=goto_split:right
+keybind = unconsumed:ctrl+k=goto_split:top
+keybind = unconsumed:ctrl+j=goto_split:bottom
+
+keybind = global:cmd+grave_accent=toggle_quick_terminal
+
+# this doesn't work with tabs
+#window-decoration = false
+
+macos-titlebar-style = hidden

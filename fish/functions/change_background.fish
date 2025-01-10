@@ -12,6 +12,7 @@ function change_background --argument mode_setting
         return
     end
     set -l nvim_conf_path (realpath ~/.config/nvim/init.lua)
+    set -l ghostty_conf_path (realpath ~/.config/ghostty/config)
 
     set -l current_mode (awk -F'"' '/vim.opt.background/ {print $2}' $nvim_conf_path)
 
@@ -43,29 +44,6 @@ function change_background --argument mode_setting
         /opt/homebrew/bin/nvr --servername "$addr" -c "set background=$mode"
     end
 
-    # change alacritty
-    switch $mode
-        case dark
-            alacritty-theme dark
-        case light
-            alacritty-theme light
-    end
+    sed -i "" -e "s#^window-theme = .*#window-theme = $mode#g" $ghostty_conf_path 
 end
 
-# switch light<->dark
-function alacritty-theme --argument theme
-    # Define the theme file path
-    set -l theme_file ~/.config/alacritty/color_$theme.toml
-
-    # Check if the theme file exists
-    if not test -f $theme_file
-        echo "File '$theme_file' doesn't exist."
-        return
-    end
-
-    # Path to the main Alacritty configuration file
-    set -l config_path ~/.config/alacritty/alacritty.toml
-
-    # Update the 'import' line in the configuration file
-    sed -i '' "s#^import = \[\".*\"\]#import = [\"$theme_file\"]#" $config_path
-end
