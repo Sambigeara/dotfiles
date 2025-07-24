@@ -1,22 +1,27 @@
-theme = dark:tokyonight_moon,light:tokyonight-day
+# theme = dark:GruvboxDarkHard,light:GruvboxLightHard
+# theme = dark:catppuccin-mocha,light:catppuccin-latte
+theme = dark:Ghostty Default StyleDark,light:Builtin Tango Light
 window-theme = light
 
 font-family = "hack nerd font"
-font-family-bold = "hack nerd font"
-font-family-italic = "hack nerd font"
-font-family-bold-italic = "hack nerd font"
+# font-family = "RobotoMono Nerd Font"
+# font-family = "Fira Code"
+# font-family = "BlexMono Nerd Font"
 font-size = 18
 #font-thicken = true
 
-keybind = unconsumed:ctrl+z=toggle_split_zoom
-keybind = unconsumed:ctrl+h=goto_split:left
-keybind = unconsumed:ctrl+l=goto_split:right
-keybind = unconsumed:ctrl+k=goto_split:top
-keybind = unconsumed:ctrl+j=goto_split:bottom
+# keybind = ctrl+z=toggle_split_zoom
+# keybind = ctrl+h=goto_split:left
+# keybind = ctrl+l=goto_split:right
+# keybind = ctrl+k=goto_split:up
+# keybind = ctrl+j=goto_split:down
 
 keybind = global:cmd+grave_accent=toggle_quick_terminal
 
 # this doesn't work with tabs
-#window-decoration = false
-
+window-decoration = false
 macos-titlebar-style = hidden
+
+macos-option-as-alt = left
+
+auto-update-channel = tip

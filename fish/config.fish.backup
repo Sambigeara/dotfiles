@@ -27,14 +27,10 @@ end
 set -x EDITOR nvim
 
 # FZN
-set -x FZN_EDITOR hx
+set -x FZN_EDITOR nvim
 
 # Helm
 set -x HELM_SECRETS_BACKEND vals
-
-# Point to source-built Helix runtime
-set -x HELIX_RUNTIME ~/code/helix/runtime
-set PATH ~/.cargo/bin $PATH
 
 # Use GNU make as `make` (by default, it's installed as `gmake`)
 # set PATH /opt/homebrew/opt/make/libexec/gnubin $PATH
@@ -64,8 +60,3 @@ end
 # TODO(saml) causes slight slowdowns
 # set -q GHCUP_INSTALL_BASE_PREFIX[1]; or set GHCUP_INSTALL_BASE_PREFIX $HOME
 # set -gx PATH $HOME/.cabal/bin /Users/samuellock/.ghcup/bin $PATH # ghcup-env
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/samuellock/google-cloud-sdk/path.fish.inc' ]
-    . '/Users/samuellock/google-cloud-sdk/path.fish.inc'
-end
