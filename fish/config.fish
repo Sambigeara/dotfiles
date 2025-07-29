@@ -10,7 +10,7 @@ if status is-interactive
     function cfg
         if set -q argv[1]
             cd ~/dotfiles/$argv[1]
-            nvim -c ":NvimTreeToggle"
+            nvim -c ":Oil"
         else
             cd ~/dotfiles
         end
@@ -27,7 +27,7 @@ end
 set -x EDITOR nvim
 
 # FZN
-set -x FZN_EDITOR hx
+set -x FZN_EDITOR nvim
 
 # Helm
 set -x HELM_SECRETS_BACKEND vals

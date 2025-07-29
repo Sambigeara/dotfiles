@@ -53,7 +53,6 @@ vim.keymap.set("n", "<Leader>q", ":q!<CR>", { silent = true })
 -- Some useful quickfix shortcuts for quickfix
 vim.keymap.set("n", "<C-n>", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<C-m>", "<cmd>cprev<CR>zz")
-vim.keymap.set("n", "<leader>a", "<cmd>cclose<CR>")
 
 -- Remove search highlight
 vim.keymap.set("n", "<Leader><space>", ":nohlsearch<CR>")
@@ -75,6 +74,39 @@ vim.keymap.set("n", "*", stay_star, { noremap = true, silent = true })
 -- clipboard with the selected word, instead keep my old word in the
 -- clipboard
 vim.keymap.set("x", "p", '"_dP')
+
+-- Keep visual selection when indenting/outdenting
+-- vim.keymap.set("v", ">", ">gv", { noremap = true })
+-- vim.keymap.set("v", "<", "<gv", { noremap = true })
+
+-- Keep visual selection when indenting/outdenting with grouped undo
+do
+	local indent_count = 0
+
+	local function indent_with_undo_group(direction)
+		if indent_count > 0 then
+			-- Try to join to previous undo block
+			local ok = pcall(vim.cmd.undojoin)
+		end
+		vim.cmd("normal! " .. direction)
+		vim.cmd("normal! gv")
+		indent_count = indent_count + 1
+
+		-- Reset counter when leaving visual mode
+		vim.defer_fn(function()
+			if vim.fn.mode() == "n" then
+				indent_count = 0
+			end
+		end, 0)
+	end
+
+	vim.keymap.set("v", ">", function()
+		indent_with_undo_group(">")
+	end)
+	vim.keymap.set("v", "<", function()
+		indent_with_undo_group("<")
+	end)
+end
 
 -- rename the word under the cursor
 vim.keymap.set("n", "<leader>rw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
@@ -117,9 +149,17 @@ vim.keymap.set("n", "<leader>gs", "<CMD>Gitsigns<CR>", { desc = "Open Gitsigns m
 vim.keymap.set("n", "]g", "<CMD>Gitsigns next_hunk<CR>", { desc = "Go to next change" })
 vim.keymap.set("n", "[g", "<CMD>Gitsigns prev_hunk<CR>", { desc = "Go to previous change" })
 
+-- Go to error diagnostics
+vim.keymap.set("n", "]d", function()
+	vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+end)
+vim.keymap.set("n", "[d", function()
+	vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
+end)
+
 -- File-tree mappings
-vim.keymap.set("n", "<C-n>", ":NvimTreeToggle<CR>", { noremap = true })
-vim.keymap.set("n", "<leader>gf", ":NvimTreeFindFileToggle!<CR>", { noremap = true })
+-- vim.keymap.set("n", "<C-n>", ":NvimTreeToggle<CR>", { noremap = true })
+-- vim.keymap.set("n", "<leader>gf", ":NvimTreeFindFileToggle!<CR>", { noremap = true })
 
 -- automatically resize all vim buffers if I resize the terminal window
 vim.api.nvim_command("autocmd VimResized * wincmd =")
@@ -185,23 +225,28 @@ rtp:prepend(lazypath)
 require("lazy").setup({
 	"NMAC427/guess-indent.nvim", -- Detect tabstop and shiftwidth automatically
 
+	-- {
+	-- 	"NLKNguyen/papercolor-theme",
+	-- 	priority = 1000,
+	-- 	config = function()
+	-- 		vim.cmd([[colorscheme PaperColor]])
+	-- 	end,
+	-- },
+
 	{
-		"NLKNguyen/papercolor-theme",
+		"ellisonleao/gruvbox.nvim",
 		priority = 1000,
 		config = function()
-			vim.cmd([[set termguicolors]]) -- for some reason required for this colourscheme
-			vim.cmd([[colorscheme PaperColor]])
+			vim.cmd([[colorscheme gruvbox]])
 		end,
 	},
 
-	-- statusline
 	{
 		"nvim-lualine/lualine.nvim",
 		event = "BufReadPost",
 		-- dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
 			require("lualine").setup({
-				-- options = { theme = "rose-pine" },
 				options = { theme = "auto" },
 				sections = {
 					lualine_b = {
@@ -220,10 +265,10 @@ require("lazy").setup({
 
 	{
 		"tpope/vim-rhubarb",
-		cmd = "GBrowse",
 	},
 	{
 		"tpope/vim-fugitive",
+		dependencies = { "tpope/vim-fugitive" },
 		cmd = { "Git", "Gvdiffsplit", "GBrowse" },
 	},
 
@@ -448,12 +493,31 @@ require("lazy").setup({
 	-- commenting out lines
 	{
 		"numToStr/Comment.nvim",
-		keys = { "gc", "gcc" },
+		keys = { "<leader>c", "<leader>cc" },
 		config = function()
 			require("Comment").setup({
+				---LHS of operator-pending mappings in NORMAL and VISUAL mode
 				opleader = {
+					---Line-comment keymap
+					line = "<leader>c",
 					---Block-comment keymap
-					block = "<Nop>",
+					block = "<leader>b",
+				},
+				---LHS of toggle mappings in NORMAL mode
+				toggler = {
+					---Line-comment toggle keymap
+					line = "<leader>cc",
+					---Block-comment toggle keymap
+					block = "<leader>cb",
+				},
+				---LHS of extra mappings
+				extra = {
+					---Add comment on the line above
+					above = "<leader>cO",
+					---Add comment on the line below
+					below = "<leader>co",
+					---Add comment at the end of line
+					eol = "<leader>cA",
 				},
 			})
 		end,
@@ -538,7 +602,7 @@ require("lazy").setup({
 
 					-- Execute a code action, usually your cursor needs to be on top of an error
 					-- or a suggestion from your LSP for this to activate.
-					map("gra", vim.lsp.buf.code_action, "[G]oto Code [A]ction", { "n", "x" })
+					map("<leader>a", vim.lsp.buf.code_action, "[G]oto Code [A]ction", { "n", "x" })
 
 					-- Find references for the word under your cursor.
 					map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
@@ -584,43 +648,6 @@ require("lazy").setup({
 						else
 							return client.supports_method(method, { bufnr = bufnr })
 						end
-					end
-
-					-- The following two autocommands are used to highlight references of the
-					-- word under your cursor when your cursor rests there for a little while.
-					--    See `:help CursorHold` for information about when this is executed
-					--
-					-- When you move your cursor, the highlights will be cleared (the second autocommand).
-					local client = vim.lsp.get_client_by_id(event.data.client_id)
-					if
-						client
-						and client_supports_method(
-							client,
-							vim.lsp.protocol.Methods.textDocument_documentHighlight,
-							event.buf
-						)
-					then
-						local highlight_augroup =
-							vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
-						vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-							buffer = event.buf,
-							group = highlight_augroup,
-							callback = vim.lsp.buf.document_highlight,
-						})
-
-						vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-							buffer = event.buf,
-							group = highlight_augroup,
-							callback = vim.lsp.buf.clear_references,
-						})
-
-						vim.api.nvim_create_autocmd("LspDetach", {
-							group = vim.api.nvim_create_augroup("kickstart-lsp-detach", { clear = true }),
-							callback = function(event2)
-								vim.lsp.buf.clear_references()
-								vim.api.nvim_clear_autocmds({ group = "kickstart-lsp-highlight", buffer = event2.buf })
-							end,
-						})
 					end
 
 					-- The following code creates a keymap to toggle inlay hints in your
