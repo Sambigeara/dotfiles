@@ -44,8 +44,13 @@ function fish_prompt --description 'Write out the prompt'
         set suffix '$'
     end
 
+    # Host
+    set -l host_color (set_color --bold blue)
+    set -l host_seg $host_color"mac:"(set_color normal)
+    echo -n $host_seg
+
     # PWD
-    set_color $color_cwd
+    set_color --bold $color_cwd
     echo -n (prompt_pwd)
     set_color normal
 

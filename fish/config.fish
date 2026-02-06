@@ -10,7 +10,8 @@ if status is-interactive
     function cfg
         if set -q argv[1]
             cd ~/dotfiles/$argv[1]
-            nvim -c ":Oil"
+            # nvim -c ":Oil"
+            hx
         else
             cd ~/dotfiles
         end
@@ -24,17 +25,35 @@ function fp
     tmux switch-client -t "$pane"
 end
 
-set -x EDITOR nvim
+# Open yazi with `w`. Then, when exiting, `q` moves to the new directory. `Q` returns to the original.
+function y
+    set tmp (mktemp -t "yazi-cwd.XXXXXX")
+    yazi $argv --cwd-file="$tmp"
+    if read -z cwd <"$tmp"; and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+        builtin cd -- "$cwd"
+    end
+    rm -f -- "$tmp"
+end
+
+set -x EDITOR hx
 
 # FZN
-set -x FZN_EDITOR nvim
+set -x FZN_EDITOR hx
 
 # Helm
 set -x HELM_SECRETS_BACKEND vals
 
+# n (node package manager)
+set -x N_PREFIX $HOME/.n
+fish_add_path $HOME/.n/bin
+
 # Point to source-built Helix runtime
 set -x HELIX_RUNTIME ~/code/helix/runtime
-set PATH ~/.cargo/bin $PATH
+fish_add_path ~/.cargo/bin
+# set PATH ~/.cargo/bin $PATH
+
+# istioctl
+fish_add_path $HOME/.istioctl/bin
 
 # Use GNU make as `make` (by default, it's installed as `gmake`)
 # set PATH /opt/homebrew/opt/make/libexec/gnubin $PATH
@@ -49,8 +68,8 @@ alias dc docker-compose
 # kube
 alias k kubectl
 
-# tailscale
-alias tailscale /Applications/Tailscale.app/Contents/MacOS/Tailscale
+# Auto envvars
+direnv hook fish | source
 
 # TODO(saml) line causes startup slowdown
 # status --is-interactive; and rbenv init - fish | source
@@ -69,3 +88,6 @@ end
 if [ -f '/Users/samuellock/google-cloud-sdk/path.fish.inc' ]
     . '/Users/samuellock/google-cloud-sdk/path.fish.inc'
 end
+
+# opencode
+fish_add_path /Users/samuellock/.opencode/bin

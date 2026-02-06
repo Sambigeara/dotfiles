@@ -3,6 +3,8 @@
 
 local vim = vim
 
+-- vim.lsp.set_log_level("debug")
+
 -- disable netrw at the very start of our init.lua, because we use nvim-tree
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -33,6 +35,9 @@ vim.o.undodir = vim.fn.stdpath("data") .. "undo"
 
 -- Indent Settings
 vim.o.expandtab = true -- expand tabs into spaces
+vim.o.shiftwidth = 4 -- size of an indent
+vim.o.tabstop = 4 -- number of spaces tabs count for
+vim.o.softtabstop = 4 -- number of spaces tab counts for in insert mode
 vim.o.autoindent = true -- copy indent from current line when starting a new line
 vim.o.wrap = true
 vim.o.breakindent = true
@@ -109,7 +114,7 @@ do
 end
 
 -- rename the word under the cursor
-vim.keymap.set("n", "<leader>rw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+-- vim.keymap.set("n", "<leader>rw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
 -- Yanking a line should act like D and C
 vim.keymap.set("n", "Y", "y$")
@@ -119,7 +124,7 @@ vim.keymap.set("n", "Y", "y$")
 vim.keymap.set("t", "<leader>q", "<C-\\><C-n>:q<cr>")
 
 -- we don't use netrw (because of nvim-tree), hence re-implement gx to open
--- links in browser
+-- links in browser (url for grepping this command lol)
 vim.keymap.set("n", "gx", '<Cmd>call jobstart(["open", expand("<cfile>")], {"detach": v:true})<CR>')
 
 -- Open help window in a vertical split to the right.
@@ -135,7 +140,8 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
 
 -- don't show number
 vim.api.nvim_create_autocmd("VimEnter", {
-	command = [[setlocal nonumber norelativenumber]],
+	-- command = [[setlocal nonumber norelativenumber]],
+	command = [[setlocal number]],
 })
 
 -- git.nvim
@@ -233,11 +239,20 @@ require("lazy").setup({
 	-- 	end,
 	-- },
 
+	-- {
+	-- 	"ellisonleao/gruvbox.nvim",
+	-- 	priority = 1000,
+	-- 	config = function()
+	-- 		vim.cmd([[colorscheme gruvbox]])
+	-- 	end,
+	-- },
+
 	{
-		"ellisonleao/gruvbox.nvim",
+		"catppuccin/nvim",
+		name = "catppuccin",
 		priority = 1000,
 		config = function()
-			vim.cmd([[colorscheme gruvbox]])
+			vim.cmd([[colorscheme catppuccin]])
 		end,
 	},
 
@@ -257,6 +272,10 @@ require("lazy").setup({
 						},
 					},
 					lualine_c = {},
+					-- Configure right side sections
+					lualine_x = {}, -- This normally shows encoding, fileformat, filetype
+					lualine_y = {}, -- This normally shows progress (percentage)
+					lualine_z = { "location" }, -- Keep just the line:column indicator
 				},
 				inactive_sections = {},
 			})
@@ -344,6 +363,7 @@ require("lazy").setup({
 			})
 
 			vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+			vim.keymap.set("n", "<C-n>", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 		end,
 	},
 
@@ -410,7 +430,7 @@ require("lazy").setup({
 				-- 	-- },
 				-- },
 				defaults = vim.tbl_extend("force", require("telescope.themes").get_ivy(), {
-					file_ignore_patterns = { "npm", "frontend/node_modules/", ".git" },
+					file_ignore_patterns = { "npm", "frontend/node_modules/" },
 				}),
 				-- pickers = {}
 				extensions = {
@@ -421,7 +441,7 @@ require("lazy").setup({
 					frecency = {
 						auto_validate = false,
 						matcher = "fuzzy",
-						ignore_patterns = { "*/.git", "*/.git/*", "*/.DS_Store", "*/node_modules" },
+						ignore_patterns = { "*/.DS_Store", "*/node_modules" },
 						path_display = { "filename_first" },
 						-- path_display = { "shorten" },
 						-- path_display = { "smart" },
@@ -453,11 +473,18 @@ require("lazy").setup({
 			-- vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "[S]earch [R]esume" })
 			-- vim.keymap.set("n", "<leader>s.", builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
 
-			vim.keymap.set("n", "<F4>", frec, { desc = "Frecency files" })
+			-- vim.keymap.set("n", "<F4>", frec, { desc = "Frecency files" })
+			vim.keymap.set("n", "<F4>", function()
+				frec({ workspace = "CWD" })
+			end, { desc = "Frecency files" })
 
 			vim.keymap.set("n", "<F5>", function()
 				builtin.buffers({ sort_mru = true, ignore_current_buffer = true })
 			end, { desc = " MRU buffers" })
+
+			vim.keymap.set("n", "<F7>", function()
+				builtin.live_grep({ default_text = "TODO\\(saml\\)" })
+			end, { desc = "Live grep TODO(saml)" })
 
 			-- Slightly advanced example of overriding default behavior and theme
 			-- vim.keymap.set("n", "<leader>/", function()
@@ -493,7 +520,10 @@ require("lazy").setup({
 	-- commenting out lines
 	{
 		"numToStr/Comment.nvim",
-		keys = { "<leader>c", "<leader>cc" },
+		-- keys = { "<leader>c", "<leader>cc" },
+		keys = {
+			{ "<leader>c", mode = { "n", "v" } },
+		},
 		config = function()
 			require("Comment").setup({
 				---LHS of operator-pending mappings in NORMAL and VISUAL mode
@@ -506,19 +536,19 @@ require("lazy").setup({
 				---LHS of toggle mappings in NORMAL mode
 				toggler = {
 					---Line-comment toggle keymap
-					line = "<leader>cc",
+					line = "<leader>c",
 					---Block-comment toggle keymap
-					block = "<leader>cb",
+					-- block = "<leader>cb",
 				},
 				---LHS of extra mappings
-				extra = {
-					---Add comment on the line above
-					above = "<leader>cO",
-					---Add comment on the line below
-					below = "<leader>co",
-					---Add comment at the end of line
-					eol = "<leader>cA",
-				},
+				-- extra = {
+				-- 	---Add comment on the line above
+				-- 	above = "<leader>cO",
+				-- 	---Add comment on the line below
+				-- 	below = "<leader>co",
+				-- 	---Add comment at the end of line
+				-- 	eol = "<leader>cA",
+				-- },
 			})
 		end,
 	},
@@ -614,11 +644,14 @@ require("lazy").setup({
 					-- Jump to the definition of the word under your cursor.
 					--  This is where a variable was first declared, or where a function is defined, etc.
 					--  To jump back, press <C-t>.
-					map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+					-- map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+					map("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
 
 					-- WARN: This is not Goto Definition, this is Goto Declaration.
 					--  For example, in C this would take you to the header.
 					map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+
+					map("gy", vim.lsp.buf.type_definition, "Goto type")
 
 					-- Fuzzy find all the symbols in your current document.
 					--  Symbols are things like variables, functions, types, etc.
@@ -714,6 +747,7 @@ require("lazy").setup({
 				gopls = {
 					settings = {
 						gopls = {
+							["build.buildFlags"] = { "-tags=tests,integration,e2e,toolsx,oxi,tinygo.wasm" },
 							usePlaceholders = true,
 							gofumpt = true,
 							analyses = {
@@ -746,15 +780,15 @@ require("lazy").setup({
 								parameterNames = true,
 								rangeVariableTypes = true,
 							},
-							buildFlags = { "-tags=tests,integration,e2e,toolsx,oxi" },
-							env = { GOFLAGS = "-tags=tests,integration,e2e,toolsx,oxi" },
 						},
 					},
 				},
 
 				pyright = {},
+				buf = {},
 				rust_analyzer = {},
 				ts_ls = {},
+				html = {},
 				zls = {},
 				yamlls = {},
 				-- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -780,6 +814,32 @@ require("lazy").setup({
 					},
 				},
 			}
+
+			-- Handle workspace/configuration requests from gopls
+			-- The default handler is not working because client.settings is empty
+			local orig_handler = vim.lsp.handlers["workspace/configuration"]
+			vim.lsp.handlers["workspace/configuration"] = function(err, result, ctx, config)
+				if ctx.client_id then
+					local client = vim.lsp.get_client_by_id(ctx.client_id)
+					if client and client.name == "gopls" then
+						local settings = {}
+						for _, item in ipairs(result.items) do
+							if item.section == "gopls" then
+								-- Return the gopls settings from our configuration
+								table.insert(settings, servers.gopls.settings.gopls or vim.NIL)
+							else
+								table.insert(settings, vim.NIL)
+							end
+						end
+						return settings
+					end
+				end
+				-- Fall back to default handler for other clients
+				if orig_handler then
+					return orig_handler(err, result, ctx, config)
+				end
+				return {}
+			end
 
 			-- Ensure the servers and tools above are installed
 			--
@@ -838,8 +898,14 @@ require("lazy").setup({
 				-- have a well standardized coding style. You can add additional
 				-- languages here or re-enable it for the disabled ones.
 				local disable_filetypes = { c = true, cpp = true }
+				local high_timeout = { go = true }
 				if disable_filetypes[vim.bo[bufnr].filetype] then
 					return nil
+				elseif high_timeout[vim.bo[bufnr].filetype] then
+					return {
+						timeout_ms = 5000, -- sometimes goimports takes it's time
+						lsp_format = "fallback",
+					}
 				else
 					return {
 						timeout_ms = 500,
@@ -851,7 +917,10 @@ require("lazy").setup({
 				lua = { "stylua" },
 				go = { "goimports", "gofmt" },
 				-- Conform can also run multiple formatters sequentially
-				-- python = { "isort", "black" },
+				python = { "isort", "black" },
+				protobuf = { "buf" },
+				html = { "html_beautify" },
+				yaml = { "yamlfmt" },
 				--
 				-- You can use 'stop_after_first' to run the first available formatter from the list
 				-- javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -1009,6 +1078,28 @@ require("lazy").setup({
 						node_incremental = "<M-o>", -- increment to the upper named parent
 						node_decremental = "<M-i>", -- decrement to the previous node
 						scope_incremental = "<tab>", -- increment to the upper scope (as defined in locals.scm)
+					},
+				},
+				textobjects = {
+					move = {
+						enable = true,
+						set_jumps = true, -- whether to set jumps in the jumplist
+						goto_next_start = {
+							["]f"] = "@function.outer",
+							["]c"] = "@class.outer",
+						},
+						goto_next_end = {
+							["]F"] = "@function.outer",
+							["]C"] = "@class.outer",
+						},
+						goto_previous_start = {
+							["[f"] = "@function.outer",
+							["[c"] = "@class.outer",
+						},
+						goto_previous_end = {
+							["[F"] = "@function.outer",
+							["[C"] = "@class.outer",
+						},
 					},
 				},
 			})
