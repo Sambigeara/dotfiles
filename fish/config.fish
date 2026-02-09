@@ -11,7 +11,7 @@ if status is-interactive
         if set -q argv[1]
             cd ~/dotfiles/$argv[1]
             # nvim -c ":Oil"
-            hx
+            nvim
         else
             cd ~/dotfiles
         end
@@ -35,10 +35,10 @@ function y
     rm -f -- "$tmp"
 end
 
-set -x EDITOR hx
+set -x EDITOR nvim
 
 # FZN
-set -x FZN_EDITOR hx
+set -x FZN_EDITOR nvim
 
 # Helm
 set -x HELM_SECRETS_BACKEND vals
