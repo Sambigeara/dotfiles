@@ -1,7 +1,7 @@
 # theme = dark:GruvboxDarkHard,light:GruvboxLightHard
 # theme = dark:catppuccin-mocha,light:catppuccin-latte
 # theme = dark:Ghostty Default Style Dark,light:Builtin Tango Light
-theme = Builtin Tango Light
+theme = dark:Catppuccin Mocha,light:Catppuccin Latte
 # theme = Ghostty Default Style Dark
 
 font-family = "hack nerd font"

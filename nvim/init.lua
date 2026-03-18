@@ -7,7 +7,14 @@ vim.g.loaded_netrwPlugin = 1
 vim.cmd("filetype plugin indent on")
 
 vim.o.termguicolors = true
-vim.o.background = "light"
+
+local function sync_background()
+	local result = vim.fn.system("defaults read -g AppleInterfaceStyle 2>/dev/null")
+	vim.o.background = result:match("Dark") and "dark" or "light"
+end
+sync_background()
+
+vim.api.nvim_create_autocmd("FocusGained", { callback = sync_background })
 
 vim.o.number = true
 vim.o.showmatch = true
@@ -33,7 +40,6 @@ vim.o.softtabstop = 4
 vim.o.autoindent = true
 vim.o.wrap = true
 vim.o.breakindent = true
-vim.opt.fillchars = { eob = "~" }
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -207,11 +213,10 @@ require("lazy").setup({
 	},
 
 	{
-		"catppuccin/nvim",
-		name = "catppuccin",
+		"NLKNguyen/papercolor-theme",
 		priority = 1000,
 		config = function()
-			vim.cmd([[colorscheme catppuccin]])
+			vim.cmd([[colorscheme PaperColor]])
 		end,
 	},
 
@@ -359,8 +364,12 @@ require("lazy").setup({
 		},
 		config = function()
 			require("telescope").setup({
-				defaults = vim.tbl_extend("force", require("telescope.themes").get_ivy(), {
+				defaults = vim.tbl_extend("force", require("telescope.themes").get_dropdown(), {
 					file_ignore_patterns = { "npm", "frontend/node_modules/" },
+					layout_config = { anchor = "CENTER", width = 0.8, height = 0.6 },
+					mappings = {
+						i = { ["<Esc>"] = require("telescope.actions").close },
+					},
 				}),
 				extensions = {
 					["ui-select"] = {
@@ -848,3 +857,6 @@ require("lazy").setup({
 		end,
 	},
 })
+
+vim.opt.fillchars = { eob = "~" }
+vim.api.nvim_set_hl(0, "EndOfBuffer", { link = "NonText" })
