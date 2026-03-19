@@ -1,0 +1,211 @@
+#!/bin/bash
+
+# --- Catppuccin Mocha palette ---
+export ROSEWATER=0xfff5e0dc
+export FLAMINGO=0xfff2cdcd
+export PINK=0xfff5c2e7
+export MAUVE=0xffcba6f7
+export RED=0xfff38ba8
+export MAROON=0xffeba0ac
+export PEACH=0xfffab387
+export YELLOW=0xfff9e2af
+export GREEN=0xffa6e3a1
+export TEAL=0xff94e2d5
+export SKY=0xff89dceb
+export SAPPHIRE=0xff74c7ec
+export BLUE=0xff89b4fa
+export LAVENDER=0xffb4befe
+export TEXT=0xffcdd6f4
+export SUBTEXT1=0xffbac2de
+export SUBTEXT0=0xffa6adc8
+export OVERLAY2=0xff9399b2
+export OVERLAY1=0xff7f849c
+export OVERLAY0=0xff6c7086
+export SURFACE2=0xff585b70
+export SURFACE1=0xff45475a
+export SURFACE0=0xff313244
+export BASE=0xff1e1e2e
+export MANTLE=0xff181825
+export CRUST=0xff11111b
+export TRANSPARENT=0x00000000
+
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+FONT="Hack Nerd Font"
+APP_FONT="sketchybar-app-font"
+
+# --- Bar appearance: floating frosted glass ---
+sketchybar --bar \
+  position=top \
+  height=37 \
+  color=0xc01e1e2e \
+  border_color=$SURFACE1 \
+  border_width=1 \
+  shadow=on \
+  corner_radius=10 \
+  y_offset=6 \
+  margin=8 \
+  blur_radius=30 \
+  padding_left=10 \
+  padding_right=10 \
+  notch_width=0 \
+  sticky=on
+
+# --- Defaults ---
+sketchybar --default \
+  icon.font="$FONT:Bold:14.0" \
+  icon.color=$TEXT \
+  icon.padding_left=4 \
+  icon.padding_right=4 \
+  label.font="$FONT:Regular:13.0" \
+  label.color=$TEXT \
+  label.padding_left=4 \
+  label.padding_right=4 \
+  background.height=28 \
+  background.corner_radius=9 \
+  popup.background.border_width=2 \
+  popup.background.corner_radius=9 \
+  popup.background.border_color=$SURFACE1 \
+  popup.background.color=0xf01e1e2e \
+  popup.blur_radius=20
+
+# --- AeroSpace workspace indicators ---
+sketchybar --add event aerospace_workspace_change
+
+for sid in $(seq 1 9); do
+  sketchybar --add item space.$sid left \
+    --set space.$sid \
+      icon="$sid" \
+      icon.font="$FONT:Bold:13.0" \
+      icon.color=$OVERLAY0 \
+      icon.highlight_color=$TEXT \
+      icon.padding_left=10 \
+      icon.padding_right=4 \
+      label.font="$APP_FONT:Regular:14.0" \
+      label.color=$OVERLAY0 \
+      label.highlight_color=$TEXT \
+      label.padding_right=14 \
+      label.y_offset=-1 \
+      padding_left=2 \
+      padding_right=2 \
+      background.color=$SURFACE0 \
+      background.border_width=1 \
+      background.border_color=$TRANSPARENT \
+      background.height=26 \
+      background.corner_radius=7 \
+      click_script="aerospace workspace $sid" \
+      script="$PLUGIN_DIR/aerospace.sh" \
+    --subscribe space.$sid aerospace_workspace_change front_app_switched
+done
+
+# --- Left items ---
+sketchybar --add item front_app left \
+  --set front_app \
+    icon.drawing=off \
+    label.font="$FONT:Bold:13.0" \
+    label.color=$TEXT \
+    script="$PLUGIN_DIR/front_app.sh" \
+  --subscribe front_app front_app_switched
+
+# --- Right items (order = rightmost first) ---
+
+# Clock
+sketchybar --add item clock right \
+  --set clock \
+    update_freq=30 \
+    icon.drawing=off \
+    label.font="$FONT:Bold:13.0" \
+    label.color=$TEXT \
+    label.padding_right=6 \
+    background.color=$SURFACE0 \
+    script="$PLUGIN_DIR/clock.sh"
+
+# GitHub notifications
+sketchybar --add item github right \
+  --set github \
+    update_freq=180 \
+    icon="󰂚" \
+    icon.font="$FONT:Bold:15.0" \
+    icon.color=$TEXT \
+    label.font="$FONT:Bold:12.0" \
+    label.color=$TEXT \
+    padding_left=2 \
+    padding_right=2 \
+    script="$PLUGIN_DIR/github.sh" \
+  --subscribe github mouse.clicked
+
+# Battery
+sketchybar --add item battery right \
+  --set battery \
+    update_freq=120 \
+    icon.font="$FONT:Bold:16.0" \
+    label.font="$FONT:Bold:12.0" \
+    padding_right=2 \
+    padding_left=2 \
+    script="$PLUGIN_DIR/battery.sh" \
+  --subscribe battery power_source_change system_woke
+
+# Volume
+sketchybar --add item volume right \
+  --set volume \
+    icon.font="$FONT:Bold:16.0" \
+    icon.color=$MAUVE \
+    label.font="$FONT:Bold:12.0" \
+    label.color=$TEXT \
+    padding_right=2 \
+    padding_left=2 \
+    script="$PLUGIN_DIR/volume.sh" \
+  --subscribe volume volume_change mouse.scrolled
+
+# Mic
+sketchybar --add item mic right \
+  --set mic \
+    update_freq=5 \
+    icon.font="$FONT:Bold:14.0" \
+    label.drawing=off \
+    padding_left=2 \
+    padding_right=2 \
+    script="$PLUGIN_DIR/mic.sh" \
+  --subscribe mic mouse.clicked
+
+# WiFi
+sketchybar --add item wifi right \
+  --set wifi \
+    icon="󰤨" \
+    icon.font="$FONT:Bold:16.0" \
+    icon.color=$TEXT \
+    label.font="$FONT:Regular:12.0" \
+    label.color=$SUBTEXT0 \
+    padding_right=4 \
+    script="$PLUGIN_DIR/wifi.sh" \
+  --subscribe wifi wifi_change system_woke mouse.clicked
+
+# CPU
+sketchybar --add item cpu right \
+  --set cpu \
+    update_freq=3 \
+    icon="󰍛" \
+    icon.font="$FONT:Bold:14.0" \
+    icon.color=$BLUE \
+    label.font="$FONT:Bold:12.0" \
+    label.color=$TEXT \
+    padding_left=2 \
+    padding_right=2 \
+    script="$PLUGIN_DIR/cpu.sh" \
+  --subscribe cpu mouse.clicked
+
+# Media
+sketchybar --add item media right \
+  --set media \
+    icon="󰐎" \
+    icon.font="$FONT:Bold:16.0" \
+    icon.color=$MAUVE \
+    label.font="$FONT:Regular:12.0" \
+    label.color=$SUBTEXT1 \
+    label.max_chars=25 \
+    scroll_texts=on \
+    drawing=off \
+    script="$PLUGIN_DIR/media.sh" \
+  --subscribe media media_change mouse.clicked
+
+##### Force all scripts to run the first time #####
+sketchybar --update

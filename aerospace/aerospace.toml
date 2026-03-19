@@ -3,6 +3,10 @@ after-login-command = []
 after-startup-command = [
   'exec-and-forget /opt/homebrew/bin/borders active_color=0xffcba6f7 inactive_color=0xff313244 width=4.0 style=round corner_radius=6.0 ax_focus=on'
 ]
+exec-on-workspace-change = [
+  '/bin/bash', '-c',
+  'sketchybar --trigger aerospace_workspace_change AEROSPACE_FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE AEROSPACE_PREV_WORKSPACE=$AEROSPACE_PREV_WORKSPACE'
+]
 start-at-login = true
 
 # Normalization
