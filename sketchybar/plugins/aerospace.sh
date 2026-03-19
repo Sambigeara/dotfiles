@@ -22,7 +22,7 @@ fi
 APPS=$(aerospace list-windows --workspace "$SID" --format '%{app-name}' 2>/dev/null)
 ICON_LINE=""
 if [ -z "$APPS" ]; then
-  ICON_LINE=" —"
+  ICON_LINE=""
 else
   while IFS= read -r APP; do
     case "$APP" in

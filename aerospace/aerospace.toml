@@ -27,13 +27,13 @@ automatically-unhide-macos-hidden-apps = false
 [key-mapping]
 preset = 'qwerty'
 
-# Gaps — reserve space for SketchyBar (34px bar height).
+# Gaps — reserve space for SketchyBar (28px bar height).
 [gaps]
 inner.horizontal = 2
 inner.vertical   = 2
 outer.left       = 2
 outer.bottom     = 2
-outer.top        = [{ monitor.main = 0 }, 36]
+outer.top        = [{ monitor.main = 0 }, 30]
 outer.right      = 2
 
 # ---------------------------------------------------------------

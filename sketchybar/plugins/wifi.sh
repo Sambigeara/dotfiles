@@ -9,6 +9,6 @@ IP=$(ipconfig getifaddr en0 2>/dev/null)
 if [ -z "$IP" ]; then
   sketchybar --set "$NAME" icon="󰤭" icon.color="$RED" label="Off"
 else
-  SSID=$(ipconfig getsummary en0 2>/dev/null | awk -F ' SSID : ' '/ SSID : / {print $2}')
+  SSID=$(system_profiler SPAirPortDataType 2>/dev/null | awk '/Current Network Information:/{found=1; next} found && /^ +[^ ]/{gsub(/^ +| *:$/,"",$0); print; exit}')
   sketchybar --set "$NAME" icon="󰤨" icon.color="$TEXT" label="${SSID:-Connected}"
 fi
