@@ -27,14 +27,13 @@ automatically-unhide-macos-hidden-apps = false
 [key-mapping]
 preset = 'qwerty'
 
-# Gaps — reserve 40px top on external monitor for SketchyBar.
-# The laptop (main) already has the native menu bar, so 2px suffices there.
+# Gaps — reserve space for SketchyBar (34px bar height).
 [gaps]
 inner.horizontal = 2
 inner.vertical   = 2
 outer.left       = 2
 outer.bottom     = 2
-outer.top        = [{ monitor.main = 0 }, 30]
+outer.top        = [{ monitor.main = 0 }, 36]
 outer.right      = 2
 
 # ---------------------------------------------------------------

@@ -36,14 +36,14 @@ APP_FONT="sketchybar-app-font"
 # --- Bar appearance: floating frosted glass ---
 sketchybar --bar \
   position=top \
-  height=37 \
+  height=34 \
   color=0xc01e1e2e \
   border_color=$SURFACE1 \
-  border_width=1 \
-  shadow=on \
-  corner_radius=10 \
-  y_offset=6 \
-  margin=8 \
+  border_width=0 \
+  shadow=off \
+  corner_radius=0 \
+  y_offset=0 \
+  margin=0 \
   blur_radius=30 \
   padding_left=10 \
   padding_right=10 \
