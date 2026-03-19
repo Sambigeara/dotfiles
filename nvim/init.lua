@@ -17,6 +17,7 @@ sync_background()
 vim.api.nvim_create_autocmd("FocusGained", { callback = sync_background })
 
 vim.o.number = true
+vim.o.cursorline = true
 vim.o.showmatch = true
 vim.o.splitright = true
 vim.o.splitbelow = true
