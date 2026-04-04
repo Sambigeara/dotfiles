@@ -8,9 +8,35 @@ vim.cmd("filetype plugin indent on")
 
 vim.o.termguicolors = true
 
+local lualine_opts = {
+	options = { theme = "auto" },
+	sections = {
+		lualine_b = {
+			{
+				"filename",
+				file_status = true,
+				path = 1,
+			},
+		},
+		lualine_c = {},
+		lualine_x = {},
+		lualine_y = {},
+		lualine_z = { "location" },
+	},
+	inactive_sections = {},
+}
+
 local function sync_background()
 	local result = vim.fn.system("defaults read -g AppleInterfaceStyle 2>/dev/null")
-	vim.o.background = result:match("Dark") and "dark" or "light"
+	local new_bg = result:match("Dark") and "dark" or "light"
+	if vim.o.background ~= new_bg then
+		vim.o.background = new_bg
+		pcall(vim.cmd.colorscheme, "PaperColor")
+		local ok, lualine = pcall(require, "lualine")
+		if ok then
+			lualine.setup(lualine_opts)
+		end
+	end
 end
 sync_background()
 
@@ -139,6 +165,38 @@ vim.keymap.set("n", "[d", function()
 	vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
 end)
 
+-- Copy buffer path + line reference to clipboard (for pasting into Claude Code)
+local function copy_reference(range)
+	local path = vim.fn.expand("%:.")
+	local ref
+	local ext = vim.fn.expand("%:e")
+	if range then
+		ref = path .. ":" .. range[1] .. "-" .. range[2]
+		local lines = vim.api.nvim_buf_get_lines(0, range[1] - 1, range[2], false)
+		ref = ref .. "\n```" .. ext .. "\n" .. table.concat(lines, "\n") .. "\n```\n"
+	else
+		local line = vim.fn.line(".")
+		ref = path .. ":" .. line .. "\n```" .. ext .. "\n" .. vim.fn.getline(".") .. "\n```\n"
+	end
+	vim.fn.setreg("+", ref)
+	local label = range and ("Copied range :" .. range[1] .. "-" .. range[2]) or ("Copied line :" .. vim.fn.line("."))
+	vim.notify(label, vim.log.levels.INFO)
+end
+
+vim.keymap.set("n", "<leader>y", function()
+	copy_reference()
+end, { desc = "Copy file:line reference" })
+
+vim.keymap.set("v", "<leader>y", function()
+	local start = vim.fn.line("v")
+	local finish = vim.fn.line(".")
+	if start > finish then
+		start, finish = finish, start
+	end
+	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "nx", false)
+	copy_reference({ start, finish })
+end, { desc = "Copy file:range reference" })
+
 -- Auto-resize buffers on terminal resize
 vim.api.nvim_command("autocmd VimResized * wincmd =")
 
@@ -225,23 +283,7 @@ require("lazy").setup({
 		"nvim-lualine/lualine.nvim",
 		event = "VeryLazy",
 		config = function()
-			require("lualine").setup({
-				options = { theme = "auto" },
-				sections = {
-					lualine_b = {
-						{
-							"filename",
-							file_status = true,
-							path = 1,
-						},
-					},
-					lualine_c = {},
-					lualine_x = {},
-					lualine_y = {},
-					lualine_z = { "location" },
-				},
-				inactive_sections = {},
-			})
+			require("lualine").setup(lualine_opts)
 		end,
 	},
 
@@ -365,13 +407,17 @@ require("lazy").setup({
 		},
 		config = function()
 			require("telescope").setup({
-				defaults = vim.tbl_extend("force", require("telescope.themes").get_dropdown(), {
+				defaults = {
 					file_ignore_patterns = { "npm", "frontend/node_modules/" },
-					layout_config = { anchor = "CENTER", width = 0.8, height = 0.6 },
+					layout_strategy = "vertical",
+					layout_config = { width = 0.95, height = 0.9, preview_height = 0.6 },
+					sorting_strategy = "ascending",
+					prompt_prefix = "> ",
+					selection_caret = "> ",
 					mappings = {
 						i = { ["<Esc>"] = require("telescope.actions").close },
 					},
-				}),
+				},
 				extensions = {
 					["ui-select"] = {
 						require("telescope.themes").get_ivy(),
