@@ -115,23 +115,12 @@ sketchybar --add item clock right \
     icon.drawing=off \
     label.font="$FONT:Bold:13.0" \
     label.color=$TEXT \
+    label.padding_left=4 \
     label.padding_right=4 \
-    background.color=$SURFACE0 \
-    script="$PLUGIN_DIR/clock.sh"
-
-# GitHub notifications
-sketchybar --add item github right \
-  --set github \
-    update_freq=180 \
-    icon="󰂚" \
-    icon.font="$FONT:Bold:15.0" \
-    icon.color=$TEXT \
-    label.font="$FONT:Bold:12.0" \
-    label.color=$TEXT \
     padding_left=0 \
     padding_right=0 \
-    script="$PLUGIN_DIR/github.sh" \
-  --subscribe github mouse.clicked
+    background.color=$SURFACE0 \
+    script="$PLUGIN_DIR/clock.sh"
 
 # Battery
 sketchybar --add item battery right \
@@ -139,8 +128,9 @@ sketchybar --add item battery right \
     update_freq=120 \
     icon.font="$FONT:Bold:16.0" \
     label.font="$FONT:Bold:12.0" \
-    padding_right=1 \
-    padding_left=1 \
+    label.padding_right=4 \
+    padding_left=2 \
+    padding_right=2 \
     script="$PLUGIN_DIR/battery.sh" \
   --subscribe battery power_source_change system_woke
 
@@ -151,8 +141,8 @@ sketchybar --add item volume right \
     icon.color=$MAUVE \
     label.font="$FONT:Bold:12.0" \
     label.color=$TEXT \
-    padding_right=1 \
-    padding_left=1 \
+    padding_left=2 \
+    padding_right=2 \
     script="$PLUGIN_DIR/volume.sh" \
   --subscribe volume volume_change mouse.scrolled
 
@@ -162,8 +152,8 @@ sketchybar --add item mic right \
     update_freq=5 \
     icon.font="$FONT:Bold:14.0" \
     label.drawing=off \
-    padding_left=0 \
-    padding_right=0 \
+    padding_left=2 \
+    padding_right=2 \
     script="$PLUGIN_DIR/mic.sh" \
   --subscribe mic mouse.clicked
 
@@ -175,7 +165,8 @@ sketchybar --add item wifi right \
     icon.color=$TEXT \
     label.font="$FONT:Regular:12.0" \
     label.color=$SUBTEXT0 \
-    padding_right=0 \
+    padding_left=2 \
+    padding_right=2 \
     script="$PLUGIN_DIR/wifi.sh" \
   --subscribe wifi wifi_change system_woke mouse.clicked
 
@@ -188,8 +179,8 @@ sketchybar --add item cpu right \
     icon.color=$BLUE \
     label.font="$FONT:Bold:12.0" \
     label.color=$TEXT \
-    padding_left=0 \
-    padding_right=0 \
+    padding_left=2 \
+    padding_right=2 \
     script="$PLUGIN_DIR/cpu.sh" \
   --subscribe cpu mouse.clicked
 
@@ -204,6 +195,8 @@ sketchybar --add item media right \
     label.max_chars=25 \
     scroll_texts=on \
     drawing=off \
+    padding_left=2 \
+    padding_right=2 \
     script="$PLUGIN_DIR/media.sh" \
   --subscribe media media_change mouse.clicked
 
