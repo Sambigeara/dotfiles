@@ -289,12 +289,8 @@ require("lazy").setup({
 
 	{
 		"tpope/vim-fugitive",
-		cmd = { "Git", "Gvdiffsplit" },
-	},
-	{
-		"tpope/vim-rhubarb",
-		dependencies = { "tpope/vim-fugitive" },
-		cmd = { "GBrowse" },
+		dependencies = { "tpope/vim-rhubarb" },
+		cmd = { "Git", "Gvdiffsplit", "GBrowse" },
 	},
 
 	{
@@ -768,7 +764,7 @@ require("lazy").setup({
 				python = { "isort", "black" },
 				protobuf = { "buf" },
 				html = { "html_beautify" },
-				yaml = { "yamlfmt" },
+				-- yaml = { "yamlfmt" },
 			},
 		},
 	},
@@ -821,79 +817,87 @@ require("lazy").setup({
 	-- Treesitter
 	{
 		"nvim-treesitter/nvim-treesitter",
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter-textobjects",
-		},
+		branch = "main",
+		lazy = false,
 		build = ":TSUpdate",
+		dependencies = {
+			{ "nvim-treesitter/nvim-treesitter-textobjects", branch = "main" },
+		},
 		config = function()
-			require("nvim-treesitter.configs").setup({
-				ensure_installed = {
-					"bash",
-					"c",
-					"diff",
-					"go",
-					"gomod",
-					"html",
-					"lua",
-					"luadoc",
-					"markdown",
-					"markdown_inline",
-					"python",
-					"query",
-					"rust",
-					"vim",
-					"vimdoc",
-					"yaml",
-					"zig",
-				},
-				auto_install = false,
-				indent = { enable = true, disable = { "ruby" } },
-				highlight = {
-					enable = true,
-					additional_vim_regex_highlighting = { "ruby" },
-					disable = function(lang, buf)
-						if lang == "markdown" and vim.api.nvim_buf_get_name(buf) == "" then
-							return true
-						end
-						local max_filesize = 100 * 1024
-						local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
-						if ok and stats and stats.size > max_filesize then
-							return true
-						end
-					end,
-				},
-				incremental_selection = {
-					enable = true,
-					keymaps = {
-						init_selection = "<M-o>",
-						node_incremental = "<M-o>",
-						node_decremental = "<M-i>",
-						scope_incremental = "<tab>",
-					},
-				},
-				textobjects = {
-					move = {
-						enable = true,
-						set_jumps = true,
-						goto_next_start = {
-							["]f"] = "@function.outer",
-							["]c"] = "@class.outer",
-						},
-						goto_next_end = {
-							["]F"] = "@function.outer",
-							["]C"] = "@class.outer",
-						},
-						goto_previous_start = {
-							["[f"] = "@function.outer",
-							["[c"] = "@class.outer",
-						},
-						goto_previous_end = {
-							["[F"] = "@function.outer",
-							["[C"] = "@class.outer",
-						},
-					},
-				},
+			require("nvim-treesitter").install({
+				"bash",
+				"c",
+				"diff",
+				"go",
+				"gomod",
+				"html",
+				"lua",
+				"luadoc",
+				"markdown",
+				"markdown_inline",
+				"python",
+				"query",
+				"rust",
+				"vim",
+				"vimdoc",
+				"yaml",
+				"zig",
 			})
+
+			require("nvim-treesitter-textobjects").setup({
+				move = { set_jumps = true },
+			})
+
+			vim.api.nvim_create_autocmd("FileType", {
+				callback = function(ev)
+					local buf = ev.buf
+					local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
+					if ok and stats and stats.size > 100 * 1024 then
+						return
+					end
+					pcall(vim.treesitter.start, buf)
+					if vim.bo[buf].filetype == "ruby" then
+						vim.bo[buf].syntax = "on"
+					else
+						vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+					end
+				end,
+			})
+
+			-- Incremental selection: Neovim 0.12 ships `an`/`in` (outer/inner
+			-- treesitter node) as operator-pending mappings. Alias to old bindings.
+			vim.keymap.set("n", "<M-o>", "van", { remap = true, desc = "select outer node" })
+			vim.keymap.set("x", "<M-o>", "an", { remap = true, desc = "expand to outer node" })
+			vim.keymap.set("x", "<M-i>", "in", { remap = true, desc = "shrink to inner node" })
+
+			local move = require("nvim-treesitter-textobjects.move")
+			local function map(lhs, fn, desc)
+				vim.keymap.set({ "n", "x", "o" }, lhs, fn, { desc = desc })
+			end
+			map("]f", function()
+				move.goto_next_start("@function.outer", "textobjects")
+			end, "next function start")
+			map("]c", function()
+				move.goto_next_start("@class.outer", "textobjects")
+			end, "next class start")
+			map("]F", function()
+				move.goto_next_end("@function.outer", "textobjects")
+			end, "next function end")
+			map("]C", function()
+				move.goto_next_end("@class.outer", "textobjects")
+			end, "next class end")
+			map("[f", function()
+				move.goto_previous_start("@function.outer", "textobjects")
+			end, "prev function start")
+			map("[c", function()
+				move.goto_previous_start("@class.outer", "textobjects")
+			end, "prev class start")
+			map("[F", function()
+				move.goto_previous_end("@function.outer", "textobjects")
+			end, "prev function end")
+			map("[C", function()
+				move.goto_previous_end("@class.outer", "textobjects")
+			end, "prev class end")
 		end,
 	},
 
