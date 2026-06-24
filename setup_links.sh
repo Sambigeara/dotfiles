@@ -9,7 +9,6 @@ ln -sf "$DOTFILES_DIR/tmux/.tmux.conf" ~/.tmux.conf
 ln -sfn "$DOTFILES_DIR/skhd" ~/.config/skhd
 ln -sfn "$DOTFILES_DIR/yabai" ~/.config/yabai
 ln -sfn "$DOTFILES_DIR/aerospace" ~/.config/aerospace
-ln -sfn "$DOTFILES_DIR/sketchybar" ~/.config/sketchybar
 ln -sfn "$DOTFILES_DIR/ghostyy" ~/.config/ghostyy
 
 git submodule update --init --recursive
