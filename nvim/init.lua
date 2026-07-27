@@ -31,7 +31,7 @@ local function sync_background()
 	local new_bg = result:match("Dark") and "dark" or "light"
 	if vim.o.background ~= new_bg then
 		vim.o.background = new_bg
-		pcall(vim.cmd.colorscheme, "PaperColor")
+		pcall(vim.cmd.colorscheme, "catppuccin")
 		local ok, lualine = pcall(require, "lualine")
 		if ok then
 			lualine.setup(lualine_opts)
@@ -272,10 +272,26 @@ require("lazy").setup({
 	},
 
 	{
-		"NLKNguyen/papercolor-theme",
+		"catppuccin/nvim",
+		name = "catppuccin",
 		priority = 1000,
 		config = function()
-			vim.cmd([[colorscheme PaperColor]])
+			require("catppuccin").setup({
+				flavour = "auto",
+				background = { light = "latte", dark = "mocha" },
+				integrations = {
+					blink_cmp = true,
+					gitsigns = true,
+					leap = true,
+					lsp_trouble = true,
+					mason = true,
+					mini = { enabled = true },
+					native_lsp = { enabled = true },
+					telescope = { enabled = true },
+					treesitter = true,
+				},
+			})
+			vim.cmd.colorscheme("catppuccin")
 		end,
 	},
 
