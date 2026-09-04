@@ -1,8 +1,8 @@
+config-version = 2
+
 # Startup
 after-login-command = []
-after-startup-command = [
-  'exec-and-forget /opt/homebrew/bin/borders active_color=0xffcba6f7 inactive_color=0xff313244 width=4.0 style=round corner_radius=6.0 ax_focus=on'
-]
+after-startup-command = []
 start-at-login = true
 
 # Normalization
@@ -19,6 +19,9 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
 # Don't auto-unhide macOS hidden apps
 automatically-unhide-macos-hidden-apps = false
+
+# Keep the workspaces previously inferred from the key bindings
+persistent-workspaces = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 [key-mapping]
 preset = 'qwerty'
@@ -103,4 +106,3 @@ alt-shift-l = ['join-with right', 'mode main']
 down       = 'volume down'
 up         = 'volume up'
 shift-down = ['volume set 0', 'mode main']
-
