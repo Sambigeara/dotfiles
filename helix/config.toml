@@ -1,0 +1,76 @@
+# theme = "papercolor-light"
+# theme = "emacs"
+theme = "eiffel_sam"
+# theme = "tokyonight"
+
+[editor]
+idle-timeout = 0
+# cursorline = true
+# These are from here https://github.com/mesmere/dotfiles/blob/main/helix/.config/helix/config.toml
+# bufferline = "always"
+# color-modes = true
+true-color = true
+# end-of-line-diagnostics = "hint"
+file-picker.hidden = false
+gutters = ["line-numbers", "spacer", "diff"]
+# clipboard-provider = "pasteboard"
+
+[editor.auto-pairs]
+'(' = ')'
+'{' = '}'
+'[' = ']'
+# '"' = '"'
+# '`' = '`'
+# '<' = '>'
+
+# [editor.lsp]
+# display-inlay-hints = true
+
+# [editor.inline-diagnostics]
+# cursor-line = "hint"
+
+[editor.soft-wrap]
+enable = true
+max-wrap = 25
+
+[keys.normal]
+F3 = "file_picker_in_current_directory"
+F5 = "buffer_picker"
+
+"$" = "goto_line_end"
+0 = "goto_line_start"
+G = "goto_file_end"
+"ret" = "goto_word"
+
+y = ["yank", "yank_to_clipboard"]
+d = ["yank_to_clipboard", "delete_selection"]
+p = ["paste_clipboard_after"]
+P = ["paste_clipboard_before"]
+R = ["replace_selections_with_clipboard"]
+
+F7 = "@/TODO\\(saml\\)<ret><space>/<ret>"
+F8 = "@/TODO\\(samlnow\\)<ret><space>/<ret>"
+
+# Copy path:line + fenced snippet (nvim <leader>y). Replaces default space.y clipboard yank.
+[keys.normal.space]
+# Full-file git blame (nvim <leader>gb). Static dump; close with :q.
+B = ":open %sh{f=$(mktemp /tmp/helix-blame.XXXXXX) && git blame -- \"%{buffer_name}\" > \"$f\" 2>&1 && echo \"$f:%{cursor_line}\"}"
+y = [
+  "extend_to_line_bounds",
+  ":pipe-to $HOME/.config/helix/copy-ref.sh \"%{buffer_name}\" %{cursor_line}",
+  ":echo Copied line :%{cursor_line}",
+]
+
+[keys.select]
+y = ["yank", "yank_to_clipboard"]
+d = ["yank_to_clipboard", "delete_selection"]
+p = ["paste_clipboard_after"]
+P = ["paste_clipboard_before"]
+R = ["replace_selections_with_clipboard"]
+
+[keys.select.space]
+y = [
+  "extend_to_line_bounds",
+  ":pipe-to $HOME/.config/helix/copy-ref.sh \"%{buffer_name}\" %{selection_line_start}-%{selection_line_end}",
+  ":echo Copied range :%{selection_line_start}-%{selection_line_end}",
+]

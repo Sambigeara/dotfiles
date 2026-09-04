@@ -1,0 +1,18 @@
+inherits = "eiffel"
+
+"ui.cursor.primary.normal" = { fg = "white", bg = "ui_mode_normal" }
+"ui.cursor.primary.insert" = { fg = "white", bg = "ui_mode_insert" }
+"ui.cursor.primary.select" = { fg = "white", bg = "ui_mode_select" }
+
+# For the picker preview selections
+"ui.highlight" = { fg = "white", bg = "ui_mode_select_accent" }
+
+# Types are italic-only black in stock eiffel, so they vanish next to keywords
+# and params. Cyan is the unused slot in eiffel's red/green/blue triad (~195°):
+# far enough from function-blue (~239°) and comment-green (~128°), and not
+# adjacent to string-red. Constructors share it (type names in value position).
+"type" = { fg = "types", modifiers = ["italic"] }
+"constructor" = { fg = "types", modifiers = ["italic"] }
+
+[palette]
+types = "#007399"

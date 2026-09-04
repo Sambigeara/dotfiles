@@ -1,0 +1,76 @@
+[language-server.gopls]
+command = "gopls"
+config = { "build.buildFlags" = ["-tags=tests,integration,e2e"] }
+
+[language-server.rust-analyzer.config.workspace.symbol.search]
+kind = "all_symbols"
+
+[language-server.rust-analyzer.config.rustfmt]
+extraArgs = ["--config", "wrap_comments=true,comment_width=100"]
+
+[[language]]
+name = "go"
+formatter = { command = "goimports" }
+# config = { "formatting.gofumpt" = true }
+# config = { "build.buildFlags" = ["-tags=tests,integration,e2e"] }
+
+[[language]]
+name = "html"
+formatter = { command = 'prettier', args = ["--parser", "html"] }
+
+[[language]]
+name = "json"
+formatter = { command = 'prettier', args = ["--parser", "json"] }
+
+[[language]]
+name = "css"
+formatter = { command = 'prettier', args = ["--parser", "css"] }
+
+[[language]]
+name = "javascript"
+formatter = { command = 'prettier', args = ["--parser", "javascript"] }
+auto-format = true
+
+[[language]]
+name = "typescript"
+formatter = { command = 'prettier', args = ["--parser", "typescript"] }
+auto-format = true
+
+[[language]]
+name = "tsx"
+formatter = { command = 'prettier', args = ["--parser", "typescript"] }
+auto-format = true
+
+[language-server.bash-language-server]
+command = "bash-language-server"
+args = ["start"]
+
+[[language]]
+name = "bash"
+language-servers = ["bash-language-server"]
+# auto-format = true
+formatter = { command = "shfmt" }
+
+[[language]]
+name = "yaml"
+# auto-format = true
+formatter = { command = "yamlfmt", args = ["-"] }
+
+[[language]]
+name = "toml"
+auto-format = true
+formatter = { command = "taplo", args = ["fmt", "-"] }
+
+[[language]]
+name = "python"
+language-servers = ["pyright", "ruff"]
+auto-format = true
+formatter = { command = "black", args = ["-", "--quiet"] }
+
+[language-server.pyright.config.python.analysis]
+typeCheckingMode = "basic"
+
+[[language]]
+name = "hcl"
+auto-format = true
+formatter = { command = "terraform", args = ["fmt", "-"] }

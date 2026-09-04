@@ -10,6 +10,7 @@ ln -sfn "$DOTFILES_DIR/skhd" ~/.config/skhd
 ln -sfn "$DOTFILES_DIR/yabai" ~/.config/yabai
 ln -sfn "$DOTFILES_DIR/aerospace" ~/.config/aerospace
 ln -sfn "$DOTFILES_DIR/ghostyy" ~/.config/ghostyy
+ln -sfn "$DOTFILES_DIR/helix" ~/.config/helix
 
 git submodule update --init --recursive
 
