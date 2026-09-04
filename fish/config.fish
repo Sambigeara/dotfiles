@@ -18,13 +18,6 @@ if status is-interactive
     end
 end
 
-# tmux
-function fp
-    set -lx tmux_out (tmux list-panes -s -F '#{session_name}:#I #{window_name}' | sort -u | awk '{printf ("%s %s\\n", $1, $2)}' | fzf --query="$1" --select-1 --exit-0)
-    set -lx pane (echo $tmux_out | awk '{print $1;}')
-    tmux switch-client -t "$pane"
-end
-
 # Open yazi with `w`. Then, when exiting, `q` moves to the new directory. `Q` returns to the original.
 function y
     set tmp (mktemp -t "yazi-cwd.XXXXXX")
@@ -39,6 +32,9 @@ set -x EDITOR nvim
 
 # FZN
 set -x FZN_EDITOR nvim
+
+# User-installed executables (including Amp)
+fish_add_path $HOME/.local/bin
 
 # Helm
 set -x HELM_SECRETS_BACKEND vals
@@ -69,7 +65,7 @@ alias dc docker-compose
 alias k kubectl
 
 # Auto envvars
-direnv hook fish | source
+# direnv hook fish | source
 
 # TODO(saml) line causes startup slowdown
 # status --is-interactive; and rbenv init - fish | source
@@ -91,3 +87,7 @@ end
 
 # opencode
 fish_add_path /Users/samuellock/.opencode/bin
+
+# Added by OrbStack: command-line tools and integration
+# This won't be added again if you remove it.
+source ~/.orbstack/shell/init2.fish 2>/dev/null || :
