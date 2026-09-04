@@ -96,6 +96,12 @@ vim.keymap.set("n", "<Leader><space>", ":nohlsearch<CR>")
 vim.keymap.set("n", "j", "gj", { noremap = true })
 vim.keymap.set("n", "k", "gk", { noremap = true })
 
+-- Helix-style: jumplist is the only "back". Revert to Neovim defaults with:
+--   vim.opt.jumpoptions = ""
+--   (unmap <C-t>; native <C-t> pops the tag stack)
+vim.opt.jumpoptions = "stack,view"
+vim.keymap.set("n", "<C-t>", "<C-o>", { desc = "Jump back" })
+
 -- Don't jump forward on * search
 local function stay_star()
 	local sview = vim.fn.winsaveview()
@@ -150,7 +156,7 @@ end)
 vim.keymap.set("n", "<leader>gd", "<CMD>Gvdiffsplit<CR>", { desc = "Show git diff" })
 vim.keymap.set("n", "<leader>gb", "<CMD>Git blame<CR>")
 vim.keymap.set("n", "<leader>go", "<CMD>GBrowse<CR>")
-vim.keymap.set("x", "<leader>go", ":<C-u> GBrowse<CR>")
+vim.keymap.set("x", "<leader>go", ":GBrowse<CR>")
 
 -- Gitsigns keymaps
 vim.keymap.set("n", "<leader>gs", "<CMD>Gitsigns<CR>", { desc = "Open Gitsigns menu" })
@@ -305,7 +311,10 @@ require("lazy").setup({
 
 	{
 		"tpope/vim-fugitive",
-		dependencies = { "tpope/vim-rhubarb" },
+		dependencies = {
+			"tpope/vim-rhubarb",
+			"shumphrey/fugitive-gitlab.vim",
+		},
 		cmd = { "Git", "Gvdiffsplit", "GBrowse" },
 	},
 
@@ -422,7 +431,11 @@ require("lazy").setup({
 				defaults = {
 					file_ignore_patterns = { "npm", "frontend/node_modules/" },
 					layout_strategy = "vertical",
-					layout_config = { width = 0.95, height = 0.9, preview_height = 0.6 },
+					layout_config = {
+						width = 0.95,
+						height = 0.9,
+						vertical = { preview_height = 0.6 },
+					},
 					sorting_strategy = "ascending",
 					prompt_prefix = "> ",
 					selection_caret = "> ",
@@ -644,6 +657,8 @@ require("lazy").setup({
 
 			local servers = {
 				clangd = {},
+				-- Disabled until Go is available in Neovim's PATH.
+				--[[
 				gopls = {
 					settings = {
 						gopls = {
@@ -683,13 +698,16 @@ require("lazy").setup({
 						},
 					},
 				},
-				pyright = {},
-				buf = {},
+				--]]
+				-- Disabled until npm is available in Neovim's PATH.
+				-- pyright = {},
+				ty = {},
+				buf_ls = {},
 				rust_analyzer = {},
-				ts_ls = {},
-				html = {},
+				-- ts_ls = {},
+				-- html = {},
 				zls = {},
-				yamlls = {},
+				-- yamlls = {},
 				lua_ls = {
 					settings = {
 						Lua = {
@@ -732,16 +750,13 @@ require("lazy").setup({
 			vim.list_extend(ensure_installed, { "stylua" })
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
+			for server_name, server in pairs(servers) do
+				server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+				vim.lsp.config(server_name, server)
+			end
+
 			require("mason-lspconfig").setup({
-				ensure_installed = {},
-				automatic_installation = true,
-				handlers = {
-					function(server_name)
-						local server = servers[server_name] or {}
-						server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-						require("lspconfig")[server_name].setup(server)
-					end,
-				},
+				automatic_enable = vim.tbl_keys(servers),
 			})
 		end,
 	},
