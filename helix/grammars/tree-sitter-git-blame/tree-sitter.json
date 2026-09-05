@@ -1,0 +1,16 @@
+{
+  "grammars": [
+    {
+      "name": "git_blame",
+      "camelcase": "GitBlame",
+      "scope": "source.git_blame",
+      "file-types": ["git-blame"]
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Default git blame annotation lines",
+    "authors": [{ "name": "Sam Lock" }]
+  }
+}

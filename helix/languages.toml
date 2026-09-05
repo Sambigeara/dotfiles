@@ -74,3 +74,15 @@ typeCheckingMode = "basic"
 name = "hcl"
 auto-format = true
 formatter = { command = "terraform", args = ["fmt", "-"] }
+
+[[language]]
+name = "git-blame"
+scope = "source.git-blame"
+grammar = "git_blame"
+file-types = ["git-blame", { glob = "helix-blame.*" }]
+soft-wrap = { enable = false }
+
+[[language]]
+name = "diff"
+file-types = ["diff", { glob = "helix-diff.*" }]
+soft-wrap = { enable = false }

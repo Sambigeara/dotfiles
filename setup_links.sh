@@ -12,6 +12,8 @@ ln -sfn "$DOTFILES_DIR/aerospace" ~/.config/aerospace
 ln -sfn "$DOTFILES_DIR/ghostyy" ~/.config/ghostyy
 ln -sfn "$DOTFILES_DIR/helix" ~/.config/helix
 
+"$DOTFILES_DIR/helix/grammars/tree-sitter-git-blame/build.sh"
+
 git submodule update --init --recursive
 
 echo "Symlinks created."

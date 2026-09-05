@@ -57,7 +57,9 @@ F8 = "@/TODO\\(samlnow\\)<ret><space>/<ret>"
 # Copy path:line + fenced snippet (nvim <leader>y). Replaces default space.y clipboard yank.
 [keys.normal.space]
 # Full-file git blame (nvim <leader>gb). Static dump; close with :q.
-B = ":open %sh{f=$(mktemp /tmp/helix-blame.XXXXXX) && git blame -- \"%{buffer_name}\" > \"$f\" 2>&1 && echo \"$f:%{cursor_line}\"}"
+B = ":open %sh{$HOME/.config/helix/blame.sh \"%{buffer_name}\" %{cursor_line}}"
+# Current-file git diff vs index (nvim <leader>gd). Unified, not vimdiff. Close with :q.
+# G = ":vsplit %sh{$HOME/.config/helix/diff.sh \"%{buffer_name}\"}"
 y = [
   "extend_to_line_bounds",
   ":pipe-to $HOME/.config/helix/copy-ref.sh \"%{buffer_name}\" %{cursor_line}",

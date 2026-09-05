@@ -1,0 +1,144 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
+  "name": "git_blame",
+  "rules": {
+    "source_file": {
+      "type": "REPEAT",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "line"
+          },
+          {
+            "type": "STRING",
+            "value": "\n"
+          }
+        ]
+      }
+    },
+    "line": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "hash"
+        },
+        {
+          "type": "PATTERN",
+          "value": " +"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "filename"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": " +"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "SYMBOL",
+          "name": "author"
+        },
+        {
+          "type": "PATTERN",
+          "value": " +"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "timestamp"
+        },
+        {
+          "type": "PATTERN",
+          "value": " +"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "lineno"
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": " "
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "code"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "hash": {
+      "type": "PATTERN",
+      "value": "\\^?[0-9a-f]+"
+    },
+    "filename": {
+      "type": "PATTERN",
+      "value": "[^(\\s]\\S*"
+    },
+    "author": {
+      "type": "PATTERN",
+      "value": "[^\\d\\s()][^\\s()]*( [^\\d\\s()][^\\s()]*)*"
+    },
+    "timestamp": {
+      "type": "PATTERN",
+      "value": "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} [+-]\\d{4}"
+    },
+    "lineno": {
+      "type": "PATTERN",
+      "value": "\\d+"
+    },
+    "code": {
+      "type": "PATTERN",
+      "value": "[^\\n]+"
+    }
+  },
+  "extras": [],
+  "conflicts": [],
+  "precedences": [],
+  "externals": [],
+  "inline": [],
+  "supertypes": [],
+  "reserved": {}
+}
