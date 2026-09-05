@@ -33,6 +33,9 @@ gutters = ["line-numbers", "spacer", "diff"]
 enable = true
 max-wrap = 25
 
+[editor.buffer-picker]
+start-position = "previous"
+
 [keys.normal]
 F3 = "file_picker_in_current_directory"
 F5 = "buffer_picker"
