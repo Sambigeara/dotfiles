@@ -39,6 +39,7 @@ start-position = "previous"
 [keys.normal]
 F3 = "file_picker_in_current_directory"
 F5 = "buffer_picker"
+"-" = "file_explorer_in_current_buffer_directory"
 
 "$" = "goto_line_end"
 0 = "goto_line_start"
@@ -58,6 +59,8 @@ F8 = "@/TODO\\(samlnow\\)<ret><space>/<ret>"
 [keys.normal.space]
 # Full-file git blame (nvim <leader>gb). Static dump; close with :q.
 B = ":open %sh{$HOME/.config/helix/blame.sh \"%{buffer_name}\" %{cursor_line}}"
+# Open file on GitHub/GitLab (nvim <leader>go / GBrowse).
+o = ":echo %sh{$HOME/.config/helix/browse.sh \"%{buffer_name}\" %{cursor_line}}"
 # Current-file git diff vs index (nvim <leader>gd). Unified, not vimdiff. Close with :q.
 # G = ":vsplit %sh{$HOME/.config/helix/diff.sh \"%{buffer_name}\"}"
 y = [
@@ -74,6 +77,7 @@ P = ["paste_clipboard_before"]
 R = ["replace_selections_with_clipboard"]
 
 [keys.select.space]
+o = ":echo %sh{$HOME/.config/helix/browse.sh \"%{buffer_name}\" %{selection_line_start}-%{selection_line_end}}"
 y = [
   "extend_to_line_bounds",
   ":pipe-to $HOME/.config/helix/copy-ref.sh \"%{buffer_name}\" %{selection_line_start}-%{selection_line_end}",

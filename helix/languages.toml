@@ -9,6 +9,10 @@ kind = "all_symbols"
 extraArgs = ["--config", "wrap_comments=true,comment_width=100"]
 
 [[language]]
+name = "rust"
+auto-format = false
+
+[[language]]
 name = "go"
 formatter = { command = "goimports" }
 # config = { "formatting.gofumpt" = true }
@@ -63,12 +67,16 @@ formatter = { command = "taplo", args = ["fmt", "-"] }
 
 [[language]]
 name = "python"
-language-servers = ["pyright", "ruff"]
+language-servers = ["ty", "ruff"]
 auto-format = true
-formatter = { command = "black", args = ["-", "--quiet"] }
 
-[language-server.pyright.config.python.analysis]
-typeCheckingMode = "basic"
+[language-server.ty]
+command = "ty"
+args = ["server"]
+
+[language-server.ruff]
+command = "ruff"
+args = ["server"]
 
 [[language]]
 name = "hcl"

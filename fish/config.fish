@@ -29,6 +29,7 @@ function y
 end
 
 set -x EDITOR nvim
+# set -x EDITOR hx
 
 # FZN
 set -x FZN_EDITOR nvim
