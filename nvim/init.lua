@@ -6,12 +6,49 @@ local use_omarchy_theme = omarchy_theme.available()
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+-- Detect modern rustfmt flags instead of falling back to the removed --write-mode option.
+vim.g.rustfmt_detect_version = 1
+
 vim.cmd("filetype plugin indent on")
 
 vim.o.termguicolors = true
 
+-- macOS omits AppleInterfaceStyle in light mode.
+local function sync_background()
+	if use_omarchy_theme then
+		return
+	end
+	local appearance = vim.o.background == "dark" and "Dark" or ""
+	if vim.fn.has("macunix") == 1 then
+		appearance = vim.fn.system({ "defaults", "read", "-g", "AppleInterfaceStyle" })
+	end
+	local theme = appearance:match("Dark") and "eiffel_sam_dark" or "eiffel_sam"
+	if vim.g.colors_name ~= theme then
+		vim.cmd.colorscheme(theme)
+	end
+end
+sync_background()
+vim.api.nvim_create_autocmd({ "FocusGained", "VimResume" }, {
+	group = vim.api.nvim_create_augroup("system_theme", { clear = true }),
+	nested = true, -- Let ColorScheme handlers refresh lualine and plugin highlights.
+	callback = sync_background,
+})
+
+vim.opt.guicursor = {
+	"n-c:block-Cursor",
+	"v:block-CursorVisual",
+	"i-ci-ve:ver25-CursorInsert",
+	"r-cr:hor20-CursorInsert",
+	"o:hor50-Cursor",
+	"sm:block-Cursor",
+}
+
 local lualine_opts = {
-	options = { theme = "auto" },
+	options = {
+		theme = use_omarchy_theme and "auto" or function()
+			return require("eiffel_sam").lualine_theme
+		end,
+	},
 	sections = {
 		lualine_b = {
 			{
@@ -27,25 +64,6 @@ local lualine_opts = {
 	},
 	inactive_sections = {},
 }
-
-local function sync_background()
-	if use_omarchy_theme or vim.fn.has("macunix") ~= 1 then
-		return
-	end
-	local result = vim.fn.system("defaults read -g AppleInterfaceStyle 2>/dev/null")
-	local new_bg = result:match("Dark") and "dark" or "light"
-	if vim.o.background ~= new_bg then
-		vim.o.background = new_bg
-		pcall(vim.cmd.colorscheme, "catppuccin")
-		local ok, lualine = pcall(require, "lualine")
-		if ok then
-			lualine.setup(lualine_opts)
-		end
-	end
-end
-sync_background()
-
-vim.api.nvim_create_autocmd("FocusGained", { callback = sync_background })
 
 vim.o.number = true
 vim.o.cursorline = true
@@ -282,29 +300,7 @@ require("lazy").setup({
 		opts = {},
 	},
 
-	use_omarchy_theme and omarchy_theme.spec() or {
-		"catppuccin/nvim",
-		name = "catppuccin",
-		priority = 1000,
-		config = function()
-			require("catppuccin").setup({
-				flavour = "auto",
-				background = { light = "latte", dark = "mocha" },
-				integrations = {
-					blink_cmp = true,
-					gitsigns = true,
-					leap = true,
-					lsp_trouble = true,
-					mason = true,
-					mini = { enabled = true },
-					native_lsp = { enabled = true },
-					telescope = { enabled = true },
-					treesitter = true,
-				},
-			})
-			vim.cmd.colorscheme("catppuccin")
-		end,
-	},
+	use_omarchy_theme and omarchy_theme.spec() or {},
 
 	{
 		"nvim-lualine/lualine.nvim",
@@ -603,7 +599,11 @@ require("lazy").setup({
 
 					map("<leader>r", vim.lsp.buf.rename, "Rename")
 					map("<leader>a", vim.lsp.buf.code_action, "Code Action", { "n", "x" })
-					map("gr", require("telescope.builtin").lsp_references, "Goto References")
+					vim.keymap.set("n", "gr", require("telescope.builtin").lsp_references, {
+						buffer = event.buf,
+						nowait = true,
+						desc = "LSP: Goto References",
+					})
 					map("gi", require("telescope.builtin").lsp_implementations, "Goto Implementation")
 					map("gd", vim.lsp.buf.definition, "Goto Definition")
 					map("gD", vim.lsp.buf.declaration, "Goto Declaration")
