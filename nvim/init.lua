@@ -1,4 +1,6 @@
 local vim = vim
+local omarchy_theme = require("omarchy_theme")
+local use_omarchy_theme = omarchy_theme.available()
 
 -- disable netrw (we use oil.nvim)
 vim.g.loaded_netrw = 1
@@ -27,6 +29,9 @@ local lualine_opts = {
 }
 
 local function sync_background()
+	if use_omarchy_theme or vim.fn.has("macunix") ~= 1 then
+		return
+	end
 	local result = vim.fn.system("defaults read -g AppleInterfaceStyle 2>/dev/null")
 	local new_bg = result:match("Dark") and "dark" or "light"
 	if vim.o.background ~= new_bg then
@@ -277,7 +282,7 @@ require("lazy").setup({
 		opts = {},
 	},
 
-	{
+	use_omarchy_theme and omarchy_theme.spec() or {
 		"catppuccin/nvim",
 		name = "catppuccin",
 		priority = 1000,
@@ -942,6 +947,10 @@ require("lazy").setup({
 		end,
 	},
 })
+
+if use_omarchy_theme then
+	omarchy_theme.start()
+end
 
 vim.opt.fillchars = { eob = "~" }
 vim.api.nvim_set_hl(0, "EndOfBuffer", { link = "NonText" })
