@@ -39,13 +39,14 @@ key = "Key3"
 mods = "Alt"
 
 [terminal.shell]
-program = "/opt/homebrew/bin/fish"
+program = "/bin/sh"
+args = ["-c", 'exec "$(command -v fish || command -v bash)"']
 
 [window]
 option_as_alt = "OnlyLeft"
 
 [general]
 live_config_reload = true
-import = ["/Users/samuellock/.config/alacritty/color_light.toml"]
+import = ["~/.config/alacritty/color_light.toml"]
 
 [terminal]

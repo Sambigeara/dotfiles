@@ -4,4 +4,8 @@ set -e
 src="$(cd "$(dirname "$0")" && pwd)/src"
 out="$(cd "$(dirname "$0")/../../runtime/grammars" && pwd)"
 mkdir -p "$out"
-cc -shared -fPIC -fno-exceptions -I "$src" -o "$out/git_blame.dylib" -xc -std=c11 "$src/parser.c"
+case $(uname -s) in
+  Darwin) ext=dylib ;;
+  *) ext=so ;;
+esac
+cc -shared -fPIC -fno-exceptions -I "$src" -o "$out/git_blame.$ext" -xc -std=c11 "$src/parser.c"

@@ -9,4 +9,10 @@ esac
 # $(cat) drops trailing newlines, then we add one so the fence matches nvim.
 {
 	printf '%s:%s\n```%s\n%s\n```\n' "$path" "$loc" "$ext" "$(cat)"
-} | pbcopy
+} | {
+    if command -v pbcopy >/dev/null 2>&1; then
+        pbcopy
+    else
+        wl-copy
+    fi
+}

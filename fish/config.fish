@@ -44,7 +44,9 @@ set -x N_PREFIX $HOME/.n
 fish_add_path $HOME/.n/bin
 
 # Point to source-built Helix runtime
-set -x HELIX_RUNTIME ~/code/helix/runtime
+if test -d ~/code/helix/runtime
+    set -x HELIX_RUNTIME ~/code/helix/runtime
+end
 fish_add_path ~/.cargo/bin
 # set PATH ~/.cargo/bin $PATH
 
@@ -91,3 +93,9 @@ fish_add_path /Users/samuellock/.opencode/bin
 # Added by OrbStack: command-line tools and integration
 # This won't be added again if you remove it.
 source ~/.orbstack/shell/init2.fish 2>/dev/null || :
+
+# Keep the personal Fish prompt after Omarchy's vendor initialization.
+if status is-interactive
+    source $__fish_config_dir/functions/fish_prompt.fish
+    functions --erase fish_right_prompt
+end
