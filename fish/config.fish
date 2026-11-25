@@ -3,7 +3,23 @@ if status is-interactive
 
     # misc
     function git-prune-local
-        git branch -r | awk '{print $1}' | egrep -v -f /dev/fd/0 (git branch -vv | grep origin | psub) | awk '{print $1}' | xargs git branch -D
+        set -l tracking (git branch -r | awk '{print $1}' | egrep -v -f /dev/fd/0 (git branch -vv | grep origin | psub) | awk '{print $1}')
+        if set -q tracking[1]
+            git branch -D $tracking
+        end
+
+        # No upstream and no origin/<name>. Only delete when every commit is already
+        # on origin and the branch is not checked out.
+        set -l tab (printf '\t')
+        git for-each-ref --format='%(refname:short)%09%(upstream)%09%(worktreepath)' refs/heads | while read -l line
+            set -l fields (string split -- $tab $line)
+            set -l b $fields[1]
+            test -z "$fields[2]"; or continue
+            test -z "$fields[3]"; or continue
+            git show-ref --verify --quiet "refs/remotes/origin/$b"; and continue
+            test (git rev-list --count $b --not --remotes=origin) -eq 0; or continue
+            git branch -D $b
+        end
     end
 
     # cd cfg
