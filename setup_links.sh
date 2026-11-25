@@ -11,6 +11,7 @@ ln -sfn "$DOTFILES_DIR/yabai" ~/.config/yabai
 ln -sfn "$DOTFILES_DIR/aerospace" ~/.config/aerospace
 ln -sfn "$DOTFILES_DIR/ghostyy" ~/.config/ghostyy
 ln -sfn "$DOTFILES_DIR/helix" ~/.config/helix
+ln -sfn "$DOTFILES_DIR/rex" ~/.config/rex
 
 "$DOTFILES_DIR/helix/grammars/tree-sitter-git-blame/build.sh"
 

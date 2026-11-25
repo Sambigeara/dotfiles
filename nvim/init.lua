@@ -495,7 +495,9 @@ require("lazy").setup({
 	},
 
 	{
+		-- Rex owns Ctrl-h/j/k/l via ~/.config/rex/init.lua + rex_nav.
 		"christoomey/vim-tmux-navigator",
+		enabled = vim.env.TMUX ~= nil and vim.env.TMUX ~= "",
 		event = "VeryLazy",
 	},
 
@@ -954,3 +956,5 @@ end
 
 vim.opt.fillchars = { eob = "~" }
 vim.api.nvim_set_hl(0, "EndOfBuffer", { link = "NonText" })
+
+require("rex_nav").setup()
