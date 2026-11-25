@@ -108,6 +108,9 @@ vim.keymap.set("n", "U", "<Cmd>redo<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<Leader>w", ":write!<CR>")
 vim.keymap.set("n", "<Leader>q", ":q!<CR>", { silent = true })
 
+-- Helix-style buffer close, without expanding in searches or command arguments.
+vim.cmd([[cnoreabbrev <expr> bc getcmdtype() == ':' && getcmdline() =~# '^bc\(!\)\?$' ? 'bd' : 'bc']])
+
 -- Quickfix navigation (avoiding <C-m> which is equivalent to <CR>)
 vim.keymap.set("n", "<C-n>", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<C-p>", "<cmd>cprev<CR>zz")
@@ -511,7 +514,6 @@ require("lazy").setup({
 		url = "https://codeberg.org/andyg/leap.nvim",
 		keys = {
 			{ "s", "<Plug>(leap)", mode = { "n", "x", "o" }, desc = "Leap forward" },
-			{ "S", "<Plug>(leap-from-window)", mode = { "n", "x", "o" }, desc = "Leap from window" },
 		},
 	},
 
@@ -611,7 +613,16 @@ require("lazy").setup({
 					map("gD", vim.lsp.buf.declaration, "Goto Declaration")
 					map("gy", vim.lsp.buf.type_definition, "Goto Type")
 					map("<leader>s", require("telescope.builtin").lsp_document_symbols, "Document Symbols")
-					map("<leader>S", require("telescope.builtin").lsp_dynamic_workspace_symbols, "Workspace Symbols")
+					map("<leader>S", function()
+						-- the dynamic picker only highlights by default, so rank with the document symbols sorter
+						local sorter = require("telescope.config").values.generic_sorter({})
+						local score = sorter.scoring_function
+						-- `#` and `*` are rust-analyzer search modifiers, not part of the symbol
+						sorter.scoring_function = function(self, prompt, ...)
+							return score(self, (prompt:gsub("[#*]", "")), ...)
+						end
+						require("telescope.builtin").lsp_dynamic_workspace_symbols({ sorter = sorter })
+					end, "Workspace Symbols")
 					-- enabling this causes a delay with `gr`
 					-- map("grt", require("telescope.builtin").lsp_type_definitions, "Goto Type Definition")
 
@@ -710,8 +721,14 @@ require("lazy").setup({
 				-- pyright = {},
 				ty = {},
 				buf_ls = {},
-				rust_analyzer = {},
-				-- ts_ls = {},
+				rust_analyzer = {
+					settings = {
+						["rust-analyzer"] = {
+							cargo = { features = "all" },
+						},
+					},
+				},
+				ts_ls = {},
 				-- html = {},
 				zls = {},
 				-- yamlls = {},

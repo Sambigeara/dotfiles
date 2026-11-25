@@ -8,6 +8,9 @@ kind = "all_symbols"
 [language-server.rust-analyzer.config.rustfmt]
 extraArgs = ["--config", "wrap_comments=true,comment_width=100"]
 
+[language-server.rust-analyzer.config.cargo]
+features = "all"
+
 [[language]]
 name = "rust"
 auto-format = false
