@@ -111,7 +111,13 @@
 - Use test harness structs with factory methods to keep test setup readable and reusable across subtests.
 
 ### Communication
+- **Confirm the exact target before posting anywhere public.** Approval of a draft is not approval of where I proposed posting it. I posted a drafted test-confirmation on an upstream PR when the user meant their own issue. Before any GitHub comment, close, or edit, name the specific issue/PR number in the ask and wait for a yes on that target.
 - **Push back on suggestions that would make things worse.** If the user suggests a change (e.g. making something private) and there's a concrete reason it needs to stay as-is (e.g. another package references it), say so immediately rather than making the change and discovering the breakage. Don't blindly apply suggestions — explain the constraint and let the user decide with full information.
+
+- **Check "is anyone watching" against the whole running session, never a time window.** Before deploying samflix I grepped the last 40 minutes of `journalctl -u samflix` for `playing`; Sam's film had started 45 minutes earlier and was still on, so the deploy killed it mid-film. The test is: the service's most recent `playing` line has no later `played` line (`journalctl -u samflix -b` for the current boot, or since the unit last started). If in any doubt, ask before restarting a live media service.
+
+### Network & Privacy
+- **Establish the required egress route before sending any traffic to a third party from a user's machine.** In the samflix spike I resolved debrid links and pulled CDN video straight from the Pi on the home IP; Mullvad was required for all of it (stated only when the plan was rejected), and the Pi's Mullvad client was installed but disconnected. Before the first outbound request from a home server or media box: look for a VPN client or tunnel container, check its state, and ask which route is required. In designs, make the egress route an explicit decision and enforce it fail-closed (kernel-level allowlist on the unit), not by proxy settings alone.
 
 ### Research & External Facts
 - **Never compute costs/prices from memorised rates — look them up live.** Training-data pricing is stale: I billed Opus at the deprecated $15/$75 card when 4.5+ had dropped to $5/$25 (cache read $0.50), overstating a 30-day usage estimate by 3×. For any cost, quota, rate-limit, or pricing question, fetch the current numbers from the authoritative source (claude.com/pricing or platform.claude.com docs) before calculating, and state the rate card used. The same applies to any fast-moving external fact where the price/limit *is* the answer.
