@@ -12,6 +12,10 @@ ln -sfn "$DOTFILES_DIR/aerospace" ~/.config/aerospace
 ln -sfn "$DOTFILES_DIR/ghostyy" ~/.config/ghostyy
 ln -sfn "$DOTFILES_DIR/helix" ~/.config/helix
 ln -sfn "$DOTFILES_DIR/rex" ~/.config/rex
+mkdir -p ~/.claude
+ln -sf "$DOTFILES_DIR/claude/CLAUDE.md" ~/.claude/CLAUDE.md
+ln -sf "$DOTFILES_DIR/claude/statusline-command.sh" ~/.claude/statusline-command.sh
+ln -sfn "$DOTFILES_DIR/claude/hooks" ~/.claude/hooks
 
 "$DOTFILES_DIR/helix/grammars/tree-sitter-git-blame/build.sh"
 
