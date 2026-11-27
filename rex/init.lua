@@ -38,9 +38,10 @@ bind("shift+j", "pane.move", { direction = "down" })
 bind("shift+k", "pane.move", { direction = "up" })
 bind("shift+l", "pane.move", { direction = "right" })
 
--- Ctrl-h/j/k/l: Neovim (nvim/lua/rex_nav.lua) publishes its edge directions to
--- ~/.cache/rex-nav/<pid>. Not an edge: pass the key so Neovim moves its own window. An edge, or
--- not Neovim: focus the neighbouring pane here. A missing file means "pass", the safe default.
+-- Ctrl-h/j/k/l: Neovim (nvim/lua/rex_nav.lua) and tandem (td) publish their edge directions to
+-- ~/.cache/rex-nav/<pid>. Not an edge: pass the key so the editor moves between its own panes. An
+-- edge, or neither editor: focus the neighbouring pane here. A missing file means "pass", the
+-- safe default.
 --
 -- focus_direction picks the nearest pane, so with two panes flush against one edge it can't
 -- tell which you came from. Reversing the last hop returns to the pane you left instead.
@@ -53,7 +54,7 @@ local function navigate(ctx, key, direction)
 		block_id = ctx.block_id,
 	})
 	local fg = p and p.foreground
-	if fg and fg.name == "nvim" then
+	if fg and (fg.name == "nvim" or fg.name == "td") then
 		local f = io.open(os.getenv("HOME") .. "/.cache/rex-nav/" .. fg.pid)
 		local edges = f and f:read("*a") or ""
 		if f then
